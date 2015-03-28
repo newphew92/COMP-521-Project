@@ -16,8 +16,8 @@ public class Vision : MonoBehaviour {
 
 
 	void OnTriggerStay(Collider col){
-		if (col.tag == "Ennemy") {
-			Debug.Log("time to die");
+		if (col.tag != transform.parent.tag&&(col.tag=="Ennemy"||col.tag=="Good" )) {
+//			Debug.Log("time to die");
 			Target = col.transform;
 		}
 	}
