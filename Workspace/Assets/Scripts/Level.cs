@@ -2,61 +2,57 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-public class Level : MonoBehaviour {
-	public int TileSize;
-	public int GridSize;
-	public int SquareHeight;
+public class Level : MonoBehaviour 
+{
 	public int[,] Grid;
-	public Transform Floor;
-	public Transform Wall;
-	public Queue UpCoords=new Queue();
-	public GridPoint Point;
 	public Transform Block;
-//	public List<Tuple<int,int>> coords=new List<Tuple<int,int>>();
+	public float Scale;
+	public int LoadLevel = 0;
+
 	// Use this for initialization
-	void Start () {
-		TileSize = 1;
-		GridSize = 10;
-		UpCoords.Enqueue(new GridPoint(0,0));
-		UpCoords.Enqueue (new GridPoint (1,1));
-//		Debug.Log (UpCoords [0]);
-		initialize ();
-		obstaclize ();
-		render ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	void Start () 
+	{
+		TerrainMaker terrain = new TerrainMaker ();
+		Grid = terrain.Level0;
+		GenerateTerrain();
 	}
 
-
-	void initialize(){
-		Grid = new int[GridSize, GridSize];
-		for (int i=0; i<GridSize; i++) {
-			for (int j=0;j<GridSize; j++){
-				Grid[i,j]=0;
+	public void GenerateTerrain ()
+	{
+		for (int i = 0; i < Grid.GetLength(0); i++) 
+		{
+			for (int j = 0;j < Grid.GetLength(1); j++)
+			{
+					Instantiate( Block, new Vector3(i * Scale, Grid[i,j] * Scale, j * Scale), Quaternion.identity );
 			}
 		}
 	}
 
-	void obstaclize(){
-		for (int i=0; i<=UpCoords.Count; i++) {
-			Debug.Log("what");
-			Point=(GridPoint)UpCoords.Dequeue();
-			Grid[Point.i,Point.j]=1;
+	public void SpawnRamp( int i, int j)
+	{
+		Transform ramp = Instantiate( Block, new Vector3(i * Scale, -1*Grid[i,j] * Scale, j * Scale), Quaternion.identity ) as Transform;
+
+		int modifier = 1;
+
+		if (LeftToRight (i, j))
+		{
+			if( Grid[i-1, j] > Grid[i+1, j]) modifier = -1;
+			ramp.Rotate (new Vector3 (0, 0, 45 * modifier));
 		}
-	}
-	void render(){
-		for (int i=0; i<GridSize; i++) {
-			for (int j=0;j<GridSize; j++){
-				Instantiate(Floor, new Vector3(i*TileSize,0,j*TileSize), Quaternion.identity);
-				if (Grid[i,j]==1){
-					Debug.Log("hue");
-					Instantiate (Block, new Vector3(i*TileSize,TileSize*0.5f,j*TileSize), Quaternion.identity);
-				}
-			}
+		else
+		{
+			if( Grid[i, j-1] > Grid[i, j+1]) modifier = -1;
+			ramp.Rotate (new Vector3 (45 * modifier, 0, 0));
 		}
 
+	}
+
+	private bool LeftToRight(int i, int j)
+	{
+		if (i - 1 < 0 || i + 1 >= Grid.GetLength (0))
+			return false;
+		if (Grid [i - 1, j] != Grid [i + 1, j])
+			return true;
+		return false;
 	}
 }
