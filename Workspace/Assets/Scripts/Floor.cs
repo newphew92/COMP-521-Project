@@ -20,7 +20,6 @@ public class Floor : MonoBehaviour {
 //		LayerMask mask = ~(1 << LayerMask.NameToLayer ("zombie")|1<<LayerMask.NameToLayer("vision")|1<<LayerMask.NameToLayer("check"));
 		Ray ray = new Ray (transform.position, LightSource.position - transform.position);
 		if (Physics.Raycast (ray, out hit, 400)) {
-			Debug.Log ("I can see");
 		} else {
 			rend.material.color = Color.red;
 		}

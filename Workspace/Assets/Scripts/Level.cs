@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 public class Level : MonoBehaviour 
 {
-	public int[,] Grid;
+	public float[,] Grid;
 	public Transform Block;
-	public float Scale;
-	public int LoadLevel = 0;
+	public float Scale = 1;
 
 	// Use this for initialization
 	void Start () 
 	{
 		TerrainMaker terrain = new TerrainMaker ();
-		Grid = terrain.Level0;
+		Grid = terrain.Level2;
 		GenerateTerrain();
 	}
 
@@ -23,7 +22,12 @@ public class Level : MonoBehaviour
 		{
 			for (int j = 0;j < Grid.GetLength(1); j++)
 			{
-					Instantiate( Block, new Vector3(i * Scale, Grid[i,j] * Scale, j * Scale), Quaternion.identity );
+				if( Grid[i,j] >= 0)
+				{
+					Transform floor = Instantiate( Block, new Vector3(i, Grid[i,j], j), Quaternion.identity ) as Transform;
+					floor.parent = gameObject.transform;
+				}
+				else SpawnRamp(i,j);
 			}
 		}
 	}
@@ -37,12 +41,12 @@ public class Level : MonoBehaviour
 		if (LeftToRight (i, j))
 		{
 			if( Grid[i-1, j] > Grid[i+1, j]) modifier = -1;
-			ramp.Rotate (new Vector3 (0, 0, 45 * modifier));
+			ramp.Rotate (new Vector3 (0, 0, 30 * modifier));
 		}
 		else
 		{
 			if( Grid[i, j-1] > Grid[i, j+1]) modifier = -1;
-			ramp.Rotate (new Vector3 (45 * modifier, 0, 0));
+			ramp.Rotate (new Vector3 (30 * modifier, 0, 0));
 		}
 
 	}
