@@ -12,7 +12,7 @@ public class Level : MonoBehaviour
 	void Start () 
 	{
 		TerrainMaker terrain = new TerrainMaker ();
-		Grid = terrain.Level2;
+		Grid = terrain.Level1;
 		GenerateTerrain();
 	}
 
