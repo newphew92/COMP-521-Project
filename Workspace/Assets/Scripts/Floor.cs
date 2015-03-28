@@ -4,6 +4,7 @@ using System.Collections;
 public class Floor : MonoBehaviour {
 	public Transform LightSource;
 	public Renderer rend;
+	public float Heat;
 	// Use this for initialization
 	void Start () {
 		rend = GetComponent<Renderer> ();

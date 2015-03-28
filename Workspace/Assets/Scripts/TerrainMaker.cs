@@ -30,21 +30,21 @@ public class TerrainMaker
 	{
 		Level1 = new float[11,11];
 		FillFloor (Level1);
-		make3x3Grid (1, 5, 0.5f, Level1);
-		make3x3Grid (9, 5, 0.5f, Level1);
-		Level1 [1, 3] = -1f;
-		Level1 [1, 7] = -1f;
-		Level1 [9, 3] = -1f;
-		Level1 [9, 7] = -1f;
+		make3x3Grid (1, 5, 2f, Level1);
+		make3x3Grid (9, 5, 2f, Level1);
+		Level1 [1, 3] = 1f;
+		Level1 [1, 7] = 1f;
+		Level1 [9, 3] = 1f;
+		Level1 [9, 7] = 1f;
 	}
 
 	void InitializeLevel2()
 	{
 		Level2 = new float[11,11];
 		FillFloor (Level2);
-		make3x3Grid (5, 5, 0.5f, Level2);
-		Level2 [3, 5] = -1f;
-		Level2 [7, 5] = -1f;
+		make3x3Grid (5, 5, 2f, Level2);
+		Level2 [3, 5] = 1f;
+		Level2 [7, 5] = 1f;
 	}
 
 	private void FillFloor(float[,] level)
