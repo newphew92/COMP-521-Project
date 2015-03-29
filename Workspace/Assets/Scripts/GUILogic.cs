@@ -5,7 +5,7 @@ public class GUILogic : MonoBehaviour
 {
 	public void StartGame()
 	{
-		Application.LoadLevel ("Level1");
+		Application.LoadLevel (1);
 	}
 
 	public void QuitGame()
