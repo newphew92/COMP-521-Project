@@ -22,9 +22,10 @@ public class UnitProperties : MonoBehaviour
 	{
 		if (ShotCooldown <= 0) 
 		{
-//			Quaternion rotation = Quaternion.FromToRotation(Bullet.forward, BulletSpawnPoint.position.forward);
-			Transform shotFired = Instantiate (Bullet, BulletSpawnPoint.position, rotation) as Transform;
-
+			Transform shotFired = Instantiate (Bullet, BulletSpawnPoint.position, Quaternion.identity) as Transform;
+			Debug.Log(direction);
+			shotFired.rotation = Quaternion.Euler(direction);
+			shotFired.Rotate(new Vector3(0,0,90));
 			shotFired.GetComponent<Rigidbody> ().AddForce (direction * BulletStrength);
 
 			ShotCooldown = FiringRate;
