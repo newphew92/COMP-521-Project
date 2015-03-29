@@ -28,6 +28,9 @@ public class UnitProperties : MonoBehaviour
 			shotFired.GetComponent<Rigidbody> ().AddForce (direction * BulletStrength);
 
 			ShotCooldown = FiringRate;
+			AudioSource a = gameObject.GetComponent<AudioSource>();
+			a.PlayOneShot(a.clip);
+			Debug.Log(Random.Range(0,100));
 		}
 	}
 }

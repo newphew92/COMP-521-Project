@@ -8,20 +8,21 @@ public class HumanFiringScript : MonoBehaviour
 	private Text t;
 	private bool alive = true;
 	private Transform Robots;
+	private UnitProperties Prop;
 
 	void Start()
 	{
 		t = textTransform.GetComponent<Text> ();
 		Robots = GameObject.Find ("Robots").transform;
+		Prop = gameObject.GetComponent<UnitProperties>();
 	}
 
 	// Update is called once per frame
 	void Update () 
 	{
-		if(Input.GetMouseButtonDown(0) && alive)
+		if(Input.GetMouseButton(0) && alive)
 		{
-			UnitProperties p = gameObject.GetComponent<UnitProperties>();
-			p.shoot(p.BulletSpawnPoint.forward);
+			Prop.shoot(Prop.BulletSpawnPoint.forward);
 		}
 
 		if( gameObject.GetComponent<UnitProperties>().HP <= 0 )
