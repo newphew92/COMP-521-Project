@@ -41,22 +41,26 @@ public class NaiveBot : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Target = Range.Target;
+//		Debug.Log (Range.Target);
 		Friends = Range.Friendlies;
 		Ennemies = Range.Ennemies;
-		if (Range.Target != null&&Seen) {
+		if (Range.Target != null) {
 
 			Shoot (Target);
 
 			StopCoroutine("FireLaser");
 			StartCoroutine("FireLaser");
-			InvokeRepeating("Shooting",1,1);
+			dummy ();
 		}
 		else{
-			CancelInvoke("Shooting");
+//			CancelInvoke("dummy");
 			Target=null;
 		}
 	}
-
+	void dummy(){
+		Debug.Log (Range.Target.position);
+		Prop.shoot (Range.Target.position);
+	}
 	void Shoot(Transform tar){
 		RaycastHit hit;
 		Ray ray = new Ray (transform.position, tar.position - transform.position);

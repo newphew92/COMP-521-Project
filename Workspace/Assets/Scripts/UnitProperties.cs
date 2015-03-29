@@ -34,7 +34,7 @@ public class UnitProperties : MonoBehaviour
 			
 			ShotCooldown = FiringRate;
 			AudioSource a = gameObject.GetComponent<AudioSource>();
-			a.PlayOneShot(a.clip);
+//			a.PlayOneShot(a.clip);
 			Debug.Log(Random.Range(0,100));
 		}
 	}
