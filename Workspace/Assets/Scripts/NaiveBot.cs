@@ -13,6 +13,9 @@ public class NaiveBot : MonoBehaviour {
 	float [,] Grid;
 	public int Size;
 	public int delay;
+	public bool Lit;
+	public int Friends;
+	public int Ennemies;
 	// Use this for initialization
 	void Start () {
 		delay=5;
@@ -28,12 +31,16 @@ public class NaiveBot : MonoBehaviour {
 		laser.enabled = false;
 		Nav = gameObject.GetComponent<NavMeshAgent> ();
 		Range = GetComponentInChildren<Vision> ();
+		Friends = Range.Friendlies;
+		Ennemies = Range.Ennemies;
 		InvokeRepeating ("patrol", 5, delay);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		Target = Range.Target;
+		Friends = Range.Friendlies;
+		Ennemies = Range.Ennemies;
 		if (Range.Target != null&&Seen) {
 
 			Shoot (Target);
@@ -83,7 +90,6 @@ public class NaiveBot : MonoBehaviour {
 		float y=0;
 		int heat=	(int)Grid[x,z];
 		Vector3 temp;
-		Debug.Log ("cord"+x+" "+z+"heatbefore" + heat);
 		switch (heat) {
 		case 0:
 			y=0;
@@ -117,7 +123,6 @@ public class NaiveBot : MonoBehaviour {
 			break;
 			
 		case 1:
-			Debug.Log("cool");
 			y=0.302f;
 			heaty=1;
 			break;
@@ -131,22 +136,38 @@ public class NaiveBot : MonoBehaviour {
 
 		tempy = new Vector3 (5*m, 5*h, 5*n);
 		temp = new Vector3 (5*x, 5*y,5*z);
-		Debug.Log ("temp" + temp + "tempy" + tempy);
 		if (destHeur (temp, heat) >= destHeur (tempy, heaty)) {
 			if (friendHeur () < destHeur (temp, heat)) {
 				Waypoint.position = temp;
 				Nav.destination = Waypoint.position;
 			}
-		} else {
+			else{
+				Nav.destination=Waypoint.position;
+			}
+		} else{
 			Debug.Log("going to high");
 			if (friendHeur () < destHeur (tempy, heaty)) {
 				Waypoint.position = tempy;
 				Nav.destination = Waypoint.position;
-			}
+			}else{
+				Nav.destination=Waypoint.position;}
 		}
-		Debug.Log ("friend" + friendHeur () + "tempy"+tempy+"heaty"+ heaty + "temp" +temp+"heat"+ heat);
+		Debug.Log ("friend" + friendHeur () + "temp"+destHeur (temp, heat)+"heaty"+ destHeur (tempy, heaty));
 
 	}
+
+	void checkLight(){
+		RaycastHit hit;
+		Ray ray = new Ray (transform.position, Vector3.down);
+		if (Physics.Raycast (ray, out hit, 400)) {
+			Lit=hit.transform.GetComponent<Floor>().Lit;
+			//			Seen = (hit.transform.tag == "Player");
+		} else {
+			Lit = false;
+		}
+	}
+
+
 
 	float friendHeur(){
 		float min=100;
@@ -164,7 +185,7 @@ public class NaiveBot : MonoBehaviour {
 		if (transform.position == Manager.Squad [hold].position) {
 			return 0;
 		}
-			return min;
+			return min/300;
 	}
 	float destHeur(Vector3 pos, int hot){
 
