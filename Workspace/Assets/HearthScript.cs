@@ -17,6 +17,7 @@ public class HearthScript : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		text.text = "Health: " + prop.HP;
+		float health = prop.HP * 100;
+		text.text = "Power: " + health.ToString("0");
 	}
 }
