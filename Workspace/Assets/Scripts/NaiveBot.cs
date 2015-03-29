@@ -16,8 +16,10 @@ public class NaiveBot : MonoBehaviour {
 	public bool Lit;
 	public int Friends;
 	public int Ennemies;
+	public UnitProperties Prop;
 	// Use this for initialization
 	void Start () {
+		Prop = GetComponent<UnitProperties> ();
 		delay=5;
 		TerrainMaker terrain = new TerrainMaker ();
 		Grid = terrain.Level1;
@@ -156,16 +158,7 @@ public class NaiveBot : MonoBehaviour {
 
 	}
 
-	void checkLight(){
-		RaycastHit hit;
-		Ray ray = new Ray (transform.position, Vector3.down);
-		if (Physics.Raycast (ray, out hit, 400)) {
-			Lit=hit.transform.GetComponent<Floor>().Lit;
-			//			Seen = (hit.transform.tag == "Player");
-		} else {
-			Lit = false;
-		}
-	}
+
 
 
 
@@ -175,11 +168,12 @@ public class NaiveBot : MonoBehaviour {
 		int i = 0;
 
 		for ( i=0; i<Manager.Squad.Length; i++) {
+			if (Manager.Squad[i]!=null){
 			float dist = Mathf.Sqrt (Mathf.Pow ((transform.position.x - Manager.Squad [i].position.x), 2) +
 			                         Mathf.Pow ((transform.position.x - Manager.Squad [i].position.x), 2));
 			if (dist<min&&dist!=0){
 				min=dist;
-				hold=i;}
+					hold=i;}}
 		}
 		Waypoint.position = Manager.Squad [hold].position;
 		if (transform.position == Manager.Squad [hold].position) {
