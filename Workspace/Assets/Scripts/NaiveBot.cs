@@ -17,6 +17,7 @@ public class NaiveBot : MonoBehaviour {
 	public int Friends;
 	public int Ennemies;
 	public UnitProperties Prop;
+
 	// Use this for initialization
 	void Start () {
 		Prop = GetComponent<UnitProperties> ();
@@ -35,7 +36,7 @@ public class NaiveBot : MonoBehaviour {
 		Range = GetComponentInChildren<Vision> ();
 		Friends = Range.Friendlies;
 		Ennemies = Range.Ennemies;
-		InvokeRepeating ("patrol", 5, delay);
+		InvokeRepeating ("patrol", 0.5f, delay);
 	}
 	
 	// Update is called once per frame
