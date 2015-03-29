@@ -21,8 +21,12 @@ public class Floor : MonoBehaviour {
 //		LayerMask mask = ~(1 << LayerMask.NameToLayer ("zombie")|1<<LayerMask.NameToLayer("vision")|1<<LayerMask.NameToLayer("check"));
 		Ray ray = new Ray (transform.position, LightSource.position - transform.position);
 		if (Physics.Raycast (ray, out hit, 400)) {
-		} else {
-			rend.material.color = Color.red;
+			if (hit.transform.tag == "Light") {
+				rend.material.color = Color.white;
+			}
+		else {
+			rend.material.color = Color.black;
 		}
+	}
 	}
 }

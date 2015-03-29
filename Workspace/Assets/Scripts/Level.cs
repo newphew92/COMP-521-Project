@@ -22,6 +22,7 @@ public class Level : MonoBehaviour
 		{
 			for (int j = 0;j < Grid.GetLength(1); j++)
 			{
+//				Debug.Log("i"+i+"j"+j+" "+Grid[i,j]);
 				if( Grid[i,j] >= 0)
 				{
 					Transform floor = Instantiate( Block, new Vector3(i, Grid[i,j], j), Quaternion.identity ) as Transform;
@@ -50,6 +51,8 @@ public class Level : MonoBehaviour
 		}
 
 	}
+
+
 
 	private bool LeftToRight(int i, int j)
 	{
