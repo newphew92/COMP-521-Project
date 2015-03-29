@@ -13,7 +13,7 @@ public class HumanFiringScript : MonoBehaviour
 	void Start()
 	{
 		t = textTransform.GetComponent<Text> ();
-		Robots = GameObject.Find ("Robots").transform;
+		Robots = GameObject.Find ("NaiveManager").transform;
 		Prop = gameObject.GetComponent<UnitProperties>();
 	}
 

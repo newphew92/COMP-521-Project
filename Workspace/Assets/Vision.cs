@@ -17,23 +17,23 @@ public class Vision : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider col){
-		if (col.tag == transform.parent.tag && (col.tag == "Ennemy" || col.tag == "Good")) {
+		if (col.tag == transform.parent.tag && (col.tag == "Enemy" || col.tag == "Good")) {
 			Friendlies++;
-		} else if (col.tag != transform.parent.tag && (col.tag == "Ennemy" || col.tag == "Good")) {
+		} else if (col.tag != transform.parent.tag && (col.tag == "Enemy" || col.tag == "Good")) {
 			Ennemies++;
 		}
 	}
 
 	void OnTriggerExit(Collider col){
-		if (col.tag == transform.parent.tag && (col.tag == "Ennemy" || col.tag == "Good")) {
+		if (col.tag == transform.parent.tag && (col.tag == "Enemy" || col.tag == "Good")) {
 			Friendlies--;
-		} else if (col.tag != transform.parent.tag && (col.tag == "Ennemy" || col.tag == "Good")) {
+		} else if (col.tag != transform.parent.tag && (col.tag == "Enemy" || col.tag == "Good")) {
 			Ennemies--;
 		}
 	}
 
 	void OnTriggerStay(Collider col){
-		if (col.tag != transform.parent.tag&&(col.tag=="Ennemy"||col.tag=="Good" )) {
+		if (col.tag != transform.parent.tag&&(col.tag=="Enemy"||col.tag=="Good" )) {
 //			Debug.Log("time to die");
 			Target = col.transform;
 		}
