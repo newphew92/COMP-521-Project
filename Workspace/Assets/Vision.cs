@@ -5,6 +5,7 @@ public class Vision : MonoBehaviour {
 	public Transform Target;
 	public int Friendlies;
 	public int Ennemies;
+	public Vector3 TargPos;
 	// Use this for initialization
 	void Start () {
 		Friendlies = 0;
@@ -13,13 +14,14 @@ public class Vision : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
 
 	void OnTriggerEnter(Collider col){
 		if (col.tag == transform.parent.tag && (col.tag == "Enemy" || col.tag == "Good")) {
+
 			Friendlies++;
 		} else if (col.tag != transform.parent.tag && (col.tag == "Enemy" || col.tag == "Good")) {
+			Target = col.transform;
 			Ennemies++;
 		}
 	}
@@ -34,8 +36,9 @@ public class Vision : MonoBehaviour {
 
 	void OnTriggerStay(Collider col){
 		if (col.tag != transform.parent.tag&&(col.tag=="Enemy"||col.tag=="Good" )) {
-//			Debug.Log("time to die");
+
 			Target = col.transform;
+			Debug.Log(Target.position);
 		}
 	}
 

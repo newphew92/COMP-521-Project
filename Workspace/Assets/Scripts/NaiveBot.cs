@@ -58,8 +58,8 @@ public class NaiveBot : MonoBehaviour {
 		}
 	}
 	void dummy(){
-		Debug.Log (Range.Target.position);
-		Prop.shoot (Range.Target.position);
+//		Debug.Log (Range.TargPos);
+		Prop.shoot (Range.TargPos);
 	}
 	void Shoot(Transform tar){
 		RaycastHit hit;
