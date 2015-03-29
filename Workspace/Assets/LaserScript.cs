@@ -21,7 +21,7 @@ public class LaserScript : MonoBehaviour
 
 	void OnCollisionEnter(Collision collision)	
 	{
-		if (collision.transform.tag == "Robot" || collision.transform.tag == "Enemy")
+		if (collision.transform.tag == "Good" || collision.transform.tag == "Enemy")
 		{
 			Transform t = collision.transform;
 			UnitProperties prop = t.GetComponent<UnitProperties>();
