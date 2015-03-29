@@ -3,9 +3,15 @@ using System.Collections;
 
 public class LaserScript : MonoBehaviour 
 {
+	public AudioClip[] laserFire;
 	public float damage = 20f;
-
 	private float timeout = 5f;
+	private AudioSource source;
+	void Start()
+	{
+		source = GetComponent<AudioSource> ();
+		source.PlayOneShot (laserFire [Random.Range (0, laserFire.Length)]);
+	}
 
 	void Update()
 	{
