@@ -32,6 +32,7 @@ public class LaserScript : MonoBehaviour
 			}
 			collision.transform.GetComponent<UnitProperties>().HP -= damage;
 		}
-		Destroy (gameObject);
+		GetComponent<CapsuleCollider> ().enabled = false;
+		GetComponent<MeshRenderer> ().enabled = false;
 	}
 }
