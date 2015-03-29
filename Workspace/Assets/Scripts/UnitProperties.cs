@@ -4,16 +4,17 @@ using System.Collections;
 public class UnitProperties : MonoBehaviour 
 {
 	public float HP = 100f;
-	public float FiringRate = 3f; // in shots per second
-	private float BulletStrength = 10000f;
-
-	private float ShotCooldown = 0f;
+	public float FiringRate = 0.5f; // in shots per second
 
 	public Transform Bullet;
 	public Transform BulletSpawnPoint;
 
+	private float BulletStrength = 10000f;
+	private float ShotCooldown = 0f;
+
 	void Update()
 	{
+		FiringRate = 0.5f;
 		if (ShotCooldown > 0)
 			ShotCooldown -= Time.deltaTime;
 	}
