@@ -29,7 +29,7 @@ public class UnitProperties : MonoBehaviour
 		if(ShotCooldown <= 0)
 			Fire ();
 
-		//UpdatePosition ();
+		UpdatePosition ();
 	}
 
 	private void Fire()
@@ -59,9 +59,9 @@ public class UnitProperties : MonoBehaviour
 		Vector3 pos = transform.position;
 		for( int i = 0; i < enemies.Length; i++)
 		{
-			Team enemyTeam = enemies [i].GetComponent<UnitProperties> ().PlayerSide;
 			if( enemies[i] != null )
 			{
+				Team enemyTeam = enemies [i].GetComponent<UnitProperties> ().PlayerSide;
 				Vector3 enemyPos = enemies[i].position;
 
 				RaycastHit hit;
@@ -103,8 +103,10 @@ public class UnitProperties : MonoBehaviour
 	private void UpdatePosition()
 	{
 		RaycastHit hit;
-		Physics.Raycast (transform.position, transform.up * -1, out hit, 10f);
-
-		CurrentlyOnTile = hit.collider.transform.GetComponent<TileProperties>().Position;
+		LayerMask mask = 1 << LayerMask.NameToLayer ("Terrain");
+		if (Physics.Raycast (transform.position, Vector3.down, out hit, 100f, mask))
+			CurrentlyOnTile = hit.collider.transform.GetComponent<TileProperties> ().Position;
+		else
+			Debug.Log ("wit");
 	}
 }
