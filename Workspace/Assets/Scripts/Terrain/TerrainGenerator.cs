@@ -28,8 +28,8 @@ public class TerrainGenerator : MonoBehaviour
 				tile.parent = row;
 
 				TileProperties tileProp = tile.gameObject.AddComponent<TileProperties>();
-				tileProp.heat = MaxHeight;
-				tileProp.position = new Vector2(i,j);
+				tileProp.BaseHeat = MaxHeight;
+				tileProp.Position = new Vector2(i,j);
 			}
 		}
 	}	

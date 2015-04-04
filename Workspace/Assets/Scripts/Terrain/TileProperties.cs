@@ -3,6 +3,6 @@ using System.Collections;
 
 public class TileProperties : MonoBehaviour 
 {
-	public float heat;
-	public Vector2 position;
+	public float BaseHeat;
+	public Vector2 Position;
 }

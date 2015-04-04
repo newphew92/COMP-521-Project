@@ -59,7 +59,7 @@ public class TerrainManager : MonoBehaviour
 				TileProperties tProp = tile.GetComponent<TileProperties>();
 
 				Renderer rend = tile.GetComponent<Renderer>();
-				float heat = tProp.heat;
+				float heat = tProp.BaseHeat;
 				if(heat >= 0)
 				{
 					P1Color.s = (heat/MaxHeat);
