@@ -3,7 +3,9 @@ using System.Collections;
 
 public class TerrainManager : MonoBehaviour 
 {
-	public enum AnalysisType{ Height, Vision };
+	public enum AnalysisType{ Height, ViewDistance };
+
+	public AnalysisType TypeOfAnalysisToUse = AnalysisType.Height;
 
 	// used to render the colours properly on the tiles
 	public bool RenderHeatOnTiles = true;
@@ -19,24 +21,9 @@ public class TerrainManager : MonoBehaviour
 	private AbstractTerrainAnalyzer analyzer;
 
 
-	private void UpdateRawBoardValues()
-	{
-		int rows = transform.childCount;
-		int cols = transform.GetChild (0).childCount;
-
-		for(int i = 0; i < transform.childCount; i++)
-		{
-			Transform row = transform.GetChild(i);
-			for( int j = 0; j < row.childCount; j++)
-			{
-				Transform tile = row.GetChild(j);
-				RawBoard[i,j] = tile.GetComponent<TileProperties>().BaseHeat;
-			}
-		}
-	}
-
 	void Start()
 	{
+		InitializeAnalyzer ();
 		// TODO: set the analyzer to the type -- this minimizes dependencies
 		// TODO: step 1: analyze the board and put in the raw values
 
@@ -49,12 +36,39 @@ public class TerrainManager : MonoBehaviour
 
 	}
 
+	private void InitializeAnalyzer()
+	{
+		if (TypeOfAnalysisToUse == AnalysisType.Height)
+			analyzer = GetComponent<HeightAnalyzer> ();
+		else if (TypeOfAnalysisToUse == AnalysisType.ViewDistance )
+			analyzer = GetComponent<ViewDistanceAnalyzer> ();
+	}
+
+	// each index has a bunch of tiles which form the choke point
+	public Transform[][] GetChokePoints()
+	{
+		return analyzer.GetChokePoints ();
+	}
+
 	void Update()
 	{
 		UpdateRawBoardValues ();
 		if( RenderHeatOnTiles )
 		{
-			RenderHeat();
+			RenderRawHeat();
+		}
+	}
+
+	private void UpdateRawBoardValues()
+	{
+		for(int i = 0; i < transform.childCount; i++)
+		{
+			Transform row = transform.GetChild(i);
+			for( int j = 0; j < row.childCount; j++)
+			{
+				Transform tile = row.GetChild(j);
+				RawBoard[i,j] = tile.GetComponent<TileProperties>().BaseHeat;
+			}
 		}
 	}
 
@@ -68,7 +82,8 @@ public class TerrainManager : MonoBehaviour
 		return 0;
 	}
 
-	private void RenderHeat()
+	// Renders the heat without player influence
+	private void RenderRawHeat()
 	{
 		for(int i = 0; i < transform.childCount; i++)
 		{
