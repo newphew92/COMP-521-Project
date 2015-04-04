@@ -3,6 +3,8 @@ using System.Collections;
 
 public class TerrainManager : MonoBehaviour 
 {
+	public enum AnalysisType{ Height, Vision };
+
 	// used to render the colours properly on the tiles
 	public bool RenderHeatOnTiles = true;
 	public float MaxHeat;
@@ -11,27 +13,45 @@ public class TerrainManager : MonoBehaviour
 	private HSBColor P1Color = HSBColor.FromColor(Color.red);
 	private HSBColor P2Color = HSBColor.FromColor(Color.blue);
 
-	public TileProperties[,] getBoard()
+	public float[,] RawBoard;
+	public TileProperties[,] AnalyzedBoard;
+	
+	private AbstractTerrainAnalyzer analyzer;
+
+
+	private void UpdateRawBoardValues()
 	{
 		int rows = transform.childCount;
 		int cols = transform.GetChild (0).childCount;
 
-		TileProperties[,] ret = new TileProperties[rows, cols];
 		for(int i = 0; i < transform.childCount; i++)
 		{
 			Transform row = transform.GetChild(i);
 			for( int j = 0; j < row.childCount; j++)
 			{
 				Transform tile = row.GetChild(j);
-				ret[i,j] = tile.GetComponent<TileProperties>();
+				RawBoard[i,j] = tile.GetComponent<TileProperties>().BaseHeat;
 			}
 		}
-		return ret;
 	}
 
+	void Start()
+	{
+		// TODO: set the analyzer to the type -- this minimizes dependencies
+		// TODO: step 1: analyze the board and put in the raw values
+
+		// initialization
+		int rows = transform.childCount;
+		int cols = transform.GetChild (0).childCount;
+
+		RawBoard = new float[rows, cols];
+		UpdateRawBoardValues ();
+
+	}
 
 	void Update()
 	{
+		UpdateRawBoardValues ();
 		if( RenderHeatOnTiles )
 		{
 			RenderHeat();

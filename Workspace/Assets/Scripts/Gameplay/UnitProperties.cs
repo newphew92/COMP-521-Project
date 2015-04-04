@@ -72,7 +72,9 @@ public class UnitProperties : MonoBehaviour
 					if( hit.transform.position == transform.position )
 					{
 						float dist = Vector3.Distance( pos, enemyPos );
-						if( dist < closestDist )
+						float yDiff = Mathf.Abs( pos.y - enemyPos.y ); // can't shoot at enemies above
+
+						if( dist < closestDist && ( yDiff > 1f || pos.y > enemyPos.y ) )
 						{
 							closestDist = dist;
 							closestUnit = enemies[i];
@@ -104,9 +106,8 @@ public class UnitProperties : MonoBehaviour
 	{
 		RaycastHit hit;
 		LayerMask mask = 1 << LayerMask.NameToLayer ("Terrain");
-		if (Physics.Raycast (transform.position, Vector3.down, out hit, 100f, mask))
+		if(Physics.Raycast (transform.position + Vector3.up * 2, Vector3.down, out hit, 10f, mask))
 			CurrentlyOnTile = hit.collider.transform.GetComponent<TileProperties> ().Position;
-		else
-			Debug.Log ("wit");
+		else Debug.Log("WE HAVE A PROBLEM CAPN: BOT POS WON UPDATE");
 	}
 }
