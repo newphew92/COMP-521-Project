@@ -10,21 +10,25 @@ public class TerrainManager : MonoBehaviour
 	// used to render the colours properly on the tiles
 	public bool RenderHeatOnTiles = true;
 	public float MaxHeat;
-	public float PlayerCenterInfluence;
+	public float PlayerCenterInfluence; // heat at center of influence
+	public float PlayerInfluenceRadius; // 0 means the player only has influence on their square, 1 means 1 square away
 
 	private HSBColor P1Color = HSBColor.FromColor(Color.red);
 	private HSBColor P2Color = HSBColor.FromColor(Color.blue);
 
 	public float[,] RawBoard;
 	public TileProperties[,] AnalyzedBoard;
-	
+	public PlayerInfluenceMap PlayerInfluence; // no board influence, just the players
+
+	private float RampInfluenceBonus = 1.5f; // for being on a ramp going up above
+	private float HighGroundInfluenceBonus = 2f; // for being on the floor above that ramp
+
 	private AbstractTerrainAnalyzer analyzer;
 
 
 	void Start()
 	{
 		InitializeAnalyzer ();
-		// TODO: set the analyzer to the type -- this minimizes dependencies
 		// TODO: step 1: analyze the board and put in the raw values
 
 		// initialization
@@ -32,8 +36,19 @@ public class TerrainManager : MonoBehaviour
 		int cols = transform.GetChild (0).childCount;
 
 		RawBoard = new float[rows, cols];
+		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius);
+
 		UpdateRawBoardValues ();
 
+	}
+	
+	void Update()
+	{
+		PlayerInfluence.UpdatePlayerInfluenceMap(GetComponent<PlayerManager>().RedPlayer);
+		if( RenderHeatOnTiles )
+		{
+			RenderRawHeat();
+		}
 	}
 
 	private void InitializeAnalyzer()
@@ -50,15 +65,6 @@ public class TerrainManager : MonoBehaviour
 		return analyzer.GetChokePoints ();
 	}
 
-	void Update()
-	{
-		UpdateRawBoardValues ();
-		if( RenderHeatOnTiles )
-		{
-			RenderRawHeat();
-		}
-	}
-
 	private void UpdateRawBoardValues()
 	{
 		for(int i = 0; i < transform.childCount; i++)
@@ -70,16 +76,6 @@ public class TerrainManager : MonoBehaviour
 				RawBoard[i,j] = tile.GetComponent<TileProperties>().BaseHeat;
 			}
 		}
-	}
-
-	// Calculates the value of influence the player exerts assuming level terrain.
-	// Values are always positive.
-	public float playerInfluence( float tilesFromPlayer )
-	{
-		float ret = PlayerCenterInfluence - tilesFromPlayer;
-		if (ret > 0) return ret;
-
-		return 0;
 	}
 
 	// Renders the heat without player influence
