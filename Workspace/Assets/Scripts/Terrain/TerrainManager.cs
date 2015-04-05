@@ -11,7 +11,7 @@ public class TerrainManager : MonoBehaviour
 	public bool RenderHeatOnTiles = true;
 	public float MaxHeat;
 	public float PlayerCenterInfluence; // heat at center of influence
-	public float PlayerInfluenceRadius; // 0 means the player only has influence on their square, 1 means 1 square away
+	public int PlayerInfluenceRadius; // 0 means the player only has influence on their square, 1 means 1 square away
 
 	private HSBColor P1Color = HSBColor.FromColor(Color.red);
 	private HSBColor P2Color = HSBColor.FromColor(Color.blue);
@@ -90,7 +90,7 @@ public class TerrainManager : MonoBehaviour
 				TileProperties tProp = tile.GetComponent<TileProperties>();
 
 				Renderer rend = tile.GetComponent<Renderer>();
-				float heat = tProp.BaseHeat;
+				float heat = PlayerInfluence.InfluenceMap[i,j];
 				if(heat >= 0)
 				{
 					P1Color.s = (heat/MaxHeat);
