@@ -24,7 +24,7 @@ public class TerrainManager : MonoBehaviour
 	private float HighGroundInfluenceBonus = 2f; // for being on the floor above that ramp
 
 	private AbstractTerrainAnalyzer analyzer;
-
+	private PlayerManager players;
 
 	void Start()
 	{
@@ -39,12 +39,12 @@ public class TerrainManager : MonoBehaviour
 		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius);
 
 		UpdateRawBoardValues ();
-
+		players = GetComponent<PlayerManager> ();
 	}
 	
 	void Update()
 	{
-		PlayerInfluence.UpdatePlayerInfluenceMap(GetComponent<PlayerManager>().RedPlayer);
+		PlayerInfluence.UpdatePlayerInfluenceMap(players.RedPlayer, players.BluePlayer);
 		if( RenderHeatOnTiles )
 		{
 			RenderRawHeat();
