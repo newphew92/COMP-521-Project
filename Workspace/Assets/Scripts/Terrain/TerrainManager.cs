@@ -9,6 +9,7 @@ public class TerrainManager : MonoBehaviour
 
 	// used to render the colours properly on the tiles
 	public bool RenderHeatOnTiles = true;
+	public bool PutPlayerInfluenceInTiles = false; // allows for debugging and data collection -- may interfere with AI
 	public float MaxHeat;
 	public float PlayerCenterInfluence; // heat at center of influence
 	public int PlayerInfluenceRadius; // 0 means the player only has influence on their square, 1 means 1 square away
@@ -90,6 +91,9 @@ public class TerrainManager : MonoBehaviour
 
 				Renderer rend = tile.GetComponent<Renderer>();
 				float heat = PlayerInfluence.InfluenceMap[i,j];
+
+				if(PutPlayerInfluenceInTiles)
+					tile.GetComponent<TileProperties>().BaseHeat = heat;
 
 				if(heat >= 0)
 				{
