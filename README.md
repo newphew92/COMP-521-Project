@@ -7,7 +7,7 @@ The influence map visualized on top of the terrain (visualization can be disable
 A prototype of this game was created for McGill game jam and was subsequently scrapped and redesigned. You can find that prototype in the Game Jam branch.
 
 ##TODO 
-###WRITE THE 5-7 PAGE REPORT WITH GRAPHS AND FIGURES AND ANALYSIS
+###WRITE THE 5-7 PAGE REPORT WITH GRAPHS AND FIGURES AND ANALYSIS AND CITATIONS
 
 
 Remember: this is a research paper, we need to cite so make sure there's a paper that has something similar we can reference.
