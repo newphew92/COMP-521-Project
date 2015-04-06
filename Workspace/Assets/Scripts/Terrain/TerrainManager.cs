@@ -22,8 +22,7 @@ public class TerrainManager : MonoBehaviour
 	public PlayerInfluenceMap PlayerInfluence; // no board influence, just the players
 
 	// the bonuses must be >= 1
-	private float RampInfluenceBonus = 1.5f; // for being on a ramp going up above
-	private float HighGroundInfluenceBonus = 2f; // for being on the floor above that ramp
+	private float HighGroundInfluenceBonus = 2f;
 
 	private AbstractTerrainAnalyzer analyzer;
 	private PlayerManager players;
@@ -38,7 +37,7 @@ public class TerrainManager : MonoBehaviour
 		int cols = transform.GetChild (0).childCount;
 
 		RawBoard = new Transform[rows, cols];
-		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, RampInfluenceBonus, HighGroundInfluenceBonus, RawBoard);
+		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, HighGroundInfluenceBonus, RawBoard);
 
 		UpdateRawBoardValues ();
 		players = GetComponent<PlayerManager> ();

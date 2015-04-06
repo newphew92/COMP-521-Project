@@ -8,18 +8,16 @@ public class PlayerInfluenceMap
 	public float PlayerCenterInfluence; // heat at center of influence
 	public int PlayerInfluenceRadius;
 
-	private float RampBonus;
 	private float HighGroundBonus;
 
 	private Transform[,] board;
 	private const float HEIGHT_THRESHOLD = 0.25f;
 
-	public PlayerInfluenceMap(int length, int width, float pCenterInfluence, int pInfluenceRadius, float rBonus, float hGroundBonus, Transform[,] brd)
+	public PlayerInfluenceMap(int length, int width, float pCenterInfluence, int pInfluenceRadius, float hGroundBonus, Transform[,] brd)
 	{
 		PlayerCenterInfluence = pCenterInfluence;
 		PlayerInfluenceRadius = pInfluenceRadius;
 
-		RampBonus = rBonus;
 		HighGroundBonus = hGroundBonus;
 
 		board = brd;
@@ -65,25 +63,26 @@ public class PlayerInfluenceMap
 
 	private void AddTeamInfluence(Transform[] playerTeam, bool isBlueTeam)
 	{
-		for (int q = 0; q < playerTeam.Length; q++) {
+		for (int q = 0; q < playerTeam.Length; q++) 
+		{
 			Transform unit = playerTeam [q];
 			
-			if (unit != null) {
+			if (unit != null) 
+			{
 				UnitProperties prop = unit.GetComponent<UnitProperties> ();
 				Vector2 pos = prop.CurrentlyOnTile;
-				
-				// TODO: figure out how to do it with different teams
-				// TODO: need to factor in terrain bonuses
 				
 				// actual update of influence
 				int x = (int)pos.x;
 				int y = (int)pos.y;
 				
-				for (int i = x - PlayerInfluenceRadius; i <= x + PlayerInfluenceRadius; i++) {
+				for (int i = x - PlayerInfluenceRadius; i <= x + PlayerInfluenceRadius; i++) 
+				{
 					if (i < 0 || i >= InfluenceMap.GetLength (0))
 						continue;
 					
-					for (int j = y - PlayerInfluenceRadius; j <= y + PlayerInfluenceRadius; j++) {
+					for (int j = y - PlayerInfluenceRadius; j <= y + PlayerInfluenceRadius; j++) 
+					{
 						if (j < 0 || j >= InfluenceMap.GetLength (1))
 							continue;
 						
@@ -145,9 +144,6 @@ public class PlayerInfluenceMap
 			int flooredHeight = (int) heightDiff; // rounds down
 			float modifiedHeat = flooredHeight * HighGroundBonus * heat;
 
-			if( onRamp && !posIsRamp )
-				modifiedHeat += RampBonus * heat;
-
 			return modifiedHeat;
 		}
 
@@ -157,10 +153,6 @@ public class PlayerInfluenceMap
 			// can't fire -- no influence
 			if( !posIsRamp && !onRamp || absDiff >= 1f)
 				return 0;
-
-			// ramp slightly higher than position
-			else if(posIsRamp)
-				return heat/RampBonus;
 
 			//TODO: shouldn't happen remove once test
 			Debug.Log("You missed a case");
