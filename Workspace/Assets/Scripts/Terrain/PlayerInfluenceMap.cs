@@ -11,6 +11,7 @@ public class PlayerInfluenceMap
 	private float HighGroundBonus;
 
 	private Transform[,] board;
+	private float[,] rawBoardValues;
 
 	public PlayerInfluenceMap(int length, int width, float pCenterInfluence, int pInfluenceRadius, float hGroundBonus, Transform[,] brd)
 	{
@@ -22,7 +23,21 @@ public class PlayerInfluenceMap
 		board = brd;
 
 		InfluenceMap = new float[length,width];
+		rawBoardValues = new float[length, width];
+
+		InitializeRawBoard ();
 		ResetPlayerInfluenceMap ();
+	}
+
+	private void InitializeRawBoard()
+	{
+		for( int i = 0; i < InfluenceMap.GetLength(0); i++ )
+		{
+			for( int j = 0; j < InfluenceMap.GetLength(1); j++ )
+			{
+				rawBoardValues[i,j] = board[i,j].GetComponent<TileProperties>().BaseHeat;
+			}
+		}
 	}
 
 	// puts all values to 0
@@ -32,7 +47,7 @@ public class PlayerInfluenceMap
 		{
 			for( int j = 0; j < InfluenceMap.GetLength(1); j++ )
 			{
-				InfluenceMap[i,j] = 0;
+				InfluenceMap[i,j] = rawBoardValues[i,j];
 			}
 		}
 	}

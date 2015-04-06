@@ -37,9 +37,9 @@ public class TerrainManager : MonoBehaviour
 		int cols = transform.GetChild (0).childCount;
 
 		RawBoard = new Transform[rows, cols];
+		UpdateRawBoardValues ();
 		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, HighGroundInfluenceBonus, RawBoard);
 
-		UpdateRawBoardValues ();
 		players = GetComponent<PlayerManager> ();
 	}
 	
