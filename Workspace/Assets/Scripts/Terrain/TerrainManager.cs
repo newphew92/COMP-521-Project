@@ -16,10 +16,11 @@ public class TerrainManager : MonoBehaviour
 	private HSBColor P1Color = HSBColor.FromColor(Color.red);
 	private HSBColor P2Color = HSBColor.FromColor(Color.blue);
 
-	public float[,] RawBoard;
+	public Transform[,] RawBoard;
 	public TileProperties[,] AnalyzedBoard;
 	public PlayerInfluenceMap PlayerInfluence; // no board influence, just the players
 
+	// the bonuses must be >= 1
 	private float RampInfluenceBonus = 1.5f; // for being on a ramp going up above
 	private float HighGroundInfluenceBonus = 2f; // for being on the floor above that ramp
 
@@ -35,8 +36,8 @@ public class TerrainManager : MonoBehaviour
 		int rows = transform.childCount;
 		int cols = transform.GetChild (0).childCount;
 
-		RawBoard = new float[rows, cols];
-		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius);
+		RawBoard = new Transform[rows, cols];
+		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, RampInfluenceBonus, HighGroundInfluenceBonus, RawBoard);
 
 		UpdateRawBoardValues ();
 		players = GetComponent<PlayerManager> ();
@@ -47,7 +48,7 @@ public class TerrainManager : MonoBehaviour
 		PlayerInfluence.UpdatePlayerInfluenceMap(players.RedPlayer, players.BluePlayer);
 		if( RenderHeatOnTiles )
 		{
-			RenderRawHeat();
+			RenderInfluenceMap();
 		}
 	}
 
@@ -72,14 +73,13 @@ public class TerrainManager : MonoBehaviour
 			Transform row = transform.GetChild(i);
 			for( int j = 0; j < row.childCount; j++)
 			{
-				Transform tile = row.GetChild(j);
-				RawBoard[i,j] = tile.GetComponent<TileProperties>().BaseHeat;
+				RawBoard[i,j] = row.GetChild(j);
 			}
 		}
 	}
 
 	// Renders the heat without player influence
-	private void RenderRawHeat()
+	private void RenderInfluenceMap()
 	{
 		for(int i = 0; i < transform.childCount; i++)
 		{
@@ -87,10 +87,10 @@ public class TerrainManager : MonoBehaviour
 			for( int j = 0; j < row.childCount; j++)
 			{
 				Transform tile = row.GetChild(j);
-				TileProperties tProp = tile.GetComponent<TileProperties>();
 
 				Renderer rend = tile.GetComponent<Renderer>();
 				float heat = PlayerInfluence.InfluenceMap[i,j];
+
 				if(heat >= 0)
 				{
 					P1Color.s = (heat/MaxHeat);

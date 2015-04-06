@@ -3,14 +3,26 @@ using System.Collections;
 
 public class PlayerInfluenceMap
 {
-	public float PlayerCenterInfluence; // heat at center of influence
-	public int PlayerInfluenceRadius; // 0 means the player only has influence on their square, 1 means 1 square away
 	public float[,] InfluenceMap { get; private set; }
 
-	public PlayerInfluenceMap(int length, int width, float pCenterInfluence, int pInfluenceRadius)
+	public float PlayerCenterInfluence; // heat at center of influence
+	public int PlayerInfluenceRadius;
+
+	private float RampBonus;
+	private float HighGroundBonus;
+
+	private Transform[,] board;
+	private const float HEIGHT_THRESHOLD = 0.25f;
+
+	public PlayerInfluenceMap(int length, int width, float pCenterInfluence, int pInfluenceRadius, float rBonus, float hGroundBonus, Transform[,] brd)
 	{
 		PlayerCenterInfluence = pCenterInfluence;
 		PlayerInfluenceRadius = pInfluenceRadius;
+
+		RampBonus = rBonus;
+		HighGroundBonus = hGroundBonus;
+
+		board = brd;
 
 		InfluenceMap = new float[length,width];
 		ResetPlayerInfluenceMap ();
@@ -93,11 +105,64 @@ public class PlayerInfluenceMap
 						if (a * a + b * b < radius * radius)
 							heat = CalculatePlayerInfluence (distFromPlayer);
 
+						// apply team and height modifiers
 						if(isBlueTeam) heat *= -1f;
+						heat = ApplyTerrainModifiers(pos, i, j, heat);
 						InfluenceMap [i, j] += heat;
 					}
 				}
 			}
+		}
+	}
+
+	private float ApplyTerrainModifiers(Vector2 playerPos, int i, int j, float heat)
+	{
+
+		int x = (int) playerPos.x;
+		int y = (int) playerPos.y;
+
+		// you control the space you're on no matter what
+		if (x == i && y == j)
+			return heat;
+
+		bool posIsRamp = board [x, y].GetComponent<TileProperties> ().Ramp;
+		bool onRamp = board [x, y].GetComponent<TileProperties> ().Ramp;
+
+		float posHeight = board [x, y].position.y;
+		float spotHeight = board [i, j].position.y;
+
+		float heightDiff = spotHeight - posHeight;
+		float absDiff = Mathf.Abs(heightDiff);
+		if (spotHeight == posHeight || absDiff <= HEIGHT_THRESHOLD)
+			return heat;
+
+
+		// player is on heigher ground than the spot
+		else if( heightDiff > 0)
+		{
+			int flooredHeight = (int) heightDiff; // rounds down
+			float modifiedHeat = flooredHeight * HighGroundBonus * heat;
+
+			if( onRamp && !posIsRamp )
+				modifiedHeat += RampBonus * heat;
+
+			return modifiedHeat;
+		}
+
+		// player is on lower ground than the spot
+		else
+		{
+			// can't fire -- no influence
+			if( !posIsRamp && !onRamp || absDiff >= 1f)
+				return 0;
+
+			// ramp slightly higher than position
+			else if(posIsRamp)
+				return heat/RampBonus;
+
+			//TODO: shouldn't happen remove once test
+			Debug.Log("You missed a case");
+			return heat;
 		}
 	}
 }
