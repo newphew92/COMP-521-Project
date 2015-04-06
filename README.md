@@ -40,3 +40,6 @@ Remember: this is a research paper, we need to cite so make sure there's a paper
 - Dynamic Terrain analysis on height
 - (if possible) Identify choke points
 - (if possible) Do the same using visibility
+
+**OTHER:**
+- Hunt down those pesky TODO comments I may have forgotten about and make sure they're done.
