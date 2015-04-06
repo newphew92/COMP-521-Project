@@ -11,7 +11,6 @@ public class PlayerInfluenceMap
 	private float HighGroundBonus;
 
 	private Transform[,] board;
-	private const float HEIGHT_THRESHOLD = 0.25f;
 
 	public PlayerInfluenceMap(int length, int width, float pCenterInfluence, int pInfluenceRadius, float hGroundBonus, Transform[,] brd)
 	{
@@ -132,14 +131,13 @@ public class PlayerInfluenceMap
 		float posHeight = board [x, y].position.y;
 		float spotHeight = board [i, j].position.y;
 
-		float heightDiff = spotHeight - posHeight;
-		float absDiff = Mathf.Abs(heightDiff);
-		if (spotHeight == posHeight || absDiff <= HEIGHT_THRESHOLD)
+		float heightDiff = Mathf.Abs(spotHeight - posHeight);
+
+		if (spotHeight == posHeight || heightDiff < 1)
 			return heat;
 
-
 		// player is on heigher ground than the spot
-		else if( heightDiff > 0)
+		else if( posHeight > spotHeight)
 		{
 			int flooredHeight = (int) heightDiff; // rounds down
 			float modifiedHeat = flooredHeight * HighGroundBonus * heat;
@@ -151,7 +149,7 @@ public class PlayerInfluenceMap
 		else
 		{
 			// can't fire -- no influence
-			if( !posIsRamp && !onRamp || absDiff >= 1f)
+			if( !posIsRamp && !onRamp || heightDiff >= 1f)
 				return 0;
 
 			//TODO: shouldn't happen remove once test

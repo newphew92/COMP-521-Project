@@ -32,7 +32,7 @@ Remember: this is a research paper, we need to cite so make sure there's a paper
 
 
 **INFLUENCE MAPS:**
-- Fix terrain height modifications
+- ~~Fix terrain height modifications~~
 - Test having multiple units
 
 
