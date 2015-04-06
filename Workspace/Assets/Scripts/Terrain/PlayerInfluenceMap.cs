@@ -115,6 +115,8 @@ public class PlayerInfluenceMap
 		}
 	}
 
+
+	// TODO: debug
 	private float ApplyTerrainModifiers(Vector2 playerPos, int i, int j, float heat)
 	{
 
