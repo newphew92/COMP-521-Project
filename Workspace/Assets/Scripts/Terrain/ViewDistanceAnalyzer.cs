@@ -22,6 +22,11 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 	// TODO
 	private void FillInViewDistances ()
 	{
+		// Algorithm:
+			// Raycast in all directions
+				// if terrain is hit, track which block it is ( bool[,] )
+			// Do the same for looking at lower ground
+			// compute heat value based on this
 	}
 
 	public override Transform[][] GetChokePoints()

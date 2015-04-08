@@ -7,6 +7,10 @@ public class TerrainManager : MonoBehaviour
 
 	public AnalysisType TypeOfAnalysisToUse = AnalysisType.Height;
 
+	// used in terrain analysis
+	public float maxTerrainHeat; // must be > 0
+	public int ChokePointSize = 2;
+
 	// used to render the colours properly on the tiles
 	public bool RenderHeatOnTiles = true;
 	public bool PutPlayerInfluenceInTiles = false; // allows for debugging and data collection -- may interfere with AI
@@ -55,9 +59,16 @@ public class TerrainManager : MonoBehaviour
 	private void InitializeAnalyzer()
 	{
 		if (TypeOfAnalysisToUse == AnalysisType.Height)
-			analyzer = GetComponent<HeightAnalyzer> ();
+			analyzer = gameObject.AddComponent<HeightAnalyzer>();
 		else if (TypeOfAnalysisToUse == AnalysisType.ViewDistance )
-			analyzer = GetComponent<ViewDistanceAnalyzer> ();
+		{
+			analyzer = gameObject.AddComponent<ViewDistanceAnalyzer>();
+			GetComponent<ViewDistanceAnalyzer>().UnitViewRadius = PlayerInfluenceRadius;
+		}
+		analyzer.level = RawBoard;
+		analyzer.maxTerrainHeat = maxTerrainHeat; // must be > 0
+		analyzer.ChokePointSize = ChokePointSize;
+		analyzer.AnalyzeTerrain ();
 	}
 
 	// each index has a bunch of tiles which form the choke point
