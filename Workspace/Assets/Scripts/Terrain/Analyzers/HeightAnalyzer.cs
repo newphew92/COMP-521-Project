@@ -14,7 +14,7 @@ public class HeightAnalyzer : AbstractTerrainAnalyzer
 			for( int j = 0; j < level.GetLength(1); j++)
 			{
 				Transform tile = level[i,j];
-				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * tile.position.y;
+				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * (maxHeight - tile.position.y);
 			}
 		}
 	}
