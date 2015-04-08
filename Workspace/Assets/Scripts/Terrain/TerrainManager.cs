@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TerrainManager : MonoBehaviour 
 {
-	public enum AnalysisType{ Height, ViewDistance };
+	public enum AnalysisType{ HardCodedValues, Height, ViewDistance };
 
 	public AnalysisType TypeOfAnalysisToUse = AnalysisType.Height;
 
@@ -33,17 +33,16 @@ public class TerrainManager : MonoBehaviour
 
 	void Start()
 	{
-		InitializeAnalyzer ();
-		// TODO: step 1: analyze the board and put in the raw values
-
-		// initialization
 		int rows = transform.childCount;
 		int cols = transform.GetChild (0).childCount;
-
 		RawBoard = new Transform[rows, cols];
 		UpdateRawBoardValues ();
-		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, HighGroundInfluenceBonus, RawBoard);
 
+		if( TypeOfAnalysisToUse != AnalysisType.HardCodedValues)
+			AnalyzeTerrain ();
+
+		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, HighGroundInfluenceBonus, RawBoard);
+		Debug.Log (PlayerInfluence);
 		players = GetComponent<PlayerManager> ();
 	}
 	
@@ -56,7 +55,7 @@ public class TerrainManager : MonoBehaviour
 		}
 	}
 
-	private void InitializeAnalyzer()
+	private void AnalyzeTerrain()
 	{
 		if (TypeOfAnalysisToUse == AnalysisType.Height)
 			analyzer = gameObject.AddComponent<HeightAnalyzer>();
@@ -69,6 +68,7 @@ public class TerrainManager : MonoBehaviour
 		analyzer.maxTerrainHeat = maxTerrainHeat; // must be > 0
 		analyzer.ChokePointSize = ChokePointSize;
 		analyzer.AnalyzeTerrain ();
+		RawBoard = analyzer.level;
 	}
 
 	// each index has a bunch of tiles which form the choke point
