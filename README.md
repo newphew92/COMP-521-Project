@@ -25,21 +25,14 @@ Remember: this is a research paper, we need to cite so make sure there's a paper
 
 
 **GAMEPLAY:**
-- Make Levels
 - Decide how movement is done (ties into AI)
 - Test shooting across multiple heights
 - Figure out good values for displaying the heat in the Terrain Manager
-
-
-**INFLUENCE MAPS:**
-- ~~Fix terrain height modifications~~
-- Test having multiple units
-
+- (Optional) show unit health
 
 **Terrain Analysis:**
-- Dynamic Terrain analysis on height
+- Heat maps based on visibility
 - (if possible) Identify choke points
-- (if possible) Do the same using visibility
 
 **OTHER:**
 - Hunt down those pesky TODO comments I may have forgotten about and make sure they're done.

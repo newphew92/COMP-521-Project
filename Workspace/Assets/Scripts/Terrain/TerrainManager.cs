@@ -3,9 +3,13 @@ using System.Collections;
 
 public class TerrainManager : MonoBehaviour 
 {
-	public enum AnalysisType{ Height, ViewDistance };
+	public enum AnalysisType{ HardCodedValues, Height, ViewDistance };
 
 	public AnalysisType TypeOfAnalysisToUse = AnalysisType.Height;
+
+	// used in terrain analysis
+	public float maxTerrainHeat; // must be > 0
+	public int ChokePointSize = 2;
 
 	// used to render the colours properly on the tiles
 	public bool RenderHeatOnTiles = true;
@@ -29,17 +33,15 @@ public class TerrainManager : MonoBehaviour
 
 	void Start()
 	{
-		InitializeAnalyzer ();
-		// TODO: step 1: analyze the board and put in the raw values
-
-		// initialization
 		int rows = transform.childCount;
 		int cols = transform.GetChild (0).childCount;
-
 		RawBoard = new Transform[rows, cols];
 		UpdateRawBoardValues ();
-		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, HighGroundInfluenceBonus, RawBoard);
 
+		if( TypeOfAnalysisToUse != AnalysisType.HardCodedValues)
+			AnalyzeTerrain ();
+
+		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, HighGroundInfluenceBonus, RawBoard);
 		players = GetComponent<PlayerManager> ();
 	}
 	
@@ -52,12 +54,20 @@ public class TerrainManager : MonoBehaviour
 		}
 	}
 
-	private void InitializeAnalyzer()
+	private void AnalyzeTerrain()
 	{
 		if (TypeOfAnalysisToUse == AnalysisType.Height)
-			analyzer = GetComponent<HeightAnalyzer> ();
+			analyzer = gameObject.AddComponent<HeightAnalyzer>();
 		else if (TypeOfAnalysisToUse == AnalysisType.ViewDistance )
-			analyzer = GetComponent<ViewDistanceAnalyzer> ();
+		{
+			analyzer = gameObject.AddComponent<ViewDistanceAnalyzer>();
+			GetComponent<ViewDistanceAnalyzer>().UnitViewRadius = PlayerInfluenceRadius;
+		}
+		analyzer.level = RawBoard;
+		analyzer.maxTerrainHeat = maxTerrainHeat; // must be > 0
+		analyzer.ChokePointSize = ChokePointSize;
+		analyzer.AnalyzeTerrain ();
+		RawBoard = analyzer.level;
 	}
 
 	// each index has a bunch of tiles which form the choke point
