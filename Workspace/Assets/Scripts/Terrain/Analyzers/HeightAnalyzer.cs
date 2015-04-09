@@ -35,7 +35,4 @@ public class HeightAnalyzer : AbstractTerrainAnalyzer
 		}
 		return max;
 	}
-
-	// TODO
-	public override Transform[][] GetChokePoints(){return null;}
 }

@@ -9,7 +9,6 @@ public class TerrainManager : MonoBehaviour
 
 	// used in terrain analysis
 	public float maxTerrainHeat; // must be > 0
-	public int ChokePointSize = 2;
 
 	// used to render the colours properly on the tiles
 	public bool RenderHeatOnTiles = true;
@@ -65,15 +64,8 @@ public class TerrainManager : MonoBehaviour
 		}
 		analyzer.level = RawBoard;
 		analyzer.maxTerrainHeat = maxTerrainHeat; // must be > 0
-		analyzer.ChokePointSize = ChokePointSize;
 		analyzer.AnalyzeTerrain ();
 		RawBoard = analyzer.level;
-	}
-
-	// each index has a bunch of tiles which form the choke point
-	public Transform[][] GetChokePoints()
-	{
-		return analyzer.GetChokePoints ();
 	}
 
 	private void UpdateRawBoardValues()
