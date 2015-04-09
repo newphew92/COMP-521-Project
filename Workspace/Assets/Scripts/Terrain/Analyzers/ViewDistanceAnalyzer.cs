@@ -46,10 +46,4 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 			}
 		}
 	}
-
-	public override Transform[][] GetChokePoints()
-	{
-
-		return null;
-	}
 }
