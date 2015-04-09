@@ -7,14 +7,16 @@ public class HeightAnalyzer : AbstractTerrainAnalyzer
 	public override void AnalyzeTerrain()
 	{
 		float maxHeight = GetHeightExtreme ();
-		float heatIncrease = maxTerrainHeat / maxHeight;
+		float heatIncrease = 0;
+		if( maxHeight > 0 )
+			heatIncrease = maxTerrainHeat / maxHeight;
 
 		for( int i = 0; i < level.GetLength(0); i++)
 		{
 			for( int j = 0; j < level.GetLength(1); j++)
 			{
 				Transform tile = level[i,j];
-				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * (maxHeight - tile.position.y);
+				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * (tile.localPosition.y * -1);
 			}
 		}
 	}
@@ -26,7 +28,7 @@ public class HeightAnalyzer : AbstractTerrainAnalyzer
 		{
 			for( int j = 0; j < level.GetLength(1); j++)
 			{
-				int currentHeight = (int) Mathf.Abs(level[i,j].transform.position.y);
+				int currentHeight = (int) (Mathf.Abs(level[i,j].transform.localPosition.y));
 				if(currentHeight > max)
 					max = currentHeight;
 			}

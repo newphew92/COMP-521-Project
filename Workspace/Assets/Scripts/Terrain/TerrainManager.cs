@@ -42,7 +42,6 @@ public class TerrainManager : MonoBehaviour
 			AnalyzeTerrain ();
 
 		PlayerInfluence = new PlayerInfluenceMap(rows, cols, PlayerCenterInfluence, PlayerInfluenceRadius, HighGroundInfluenceBonus, RawBoard);
-		Debug.Log (PlayerInfluence);
 		players = GetComponent<PlayerManager> ();
 	}
 	
