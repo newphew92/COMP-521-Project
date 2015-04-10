@@ -18,9 +18,12 @@ public class UnitProperties : MonoBehaviour
 	private float BulletStrength = 10f;
 	private float ShotCooldown = 0f;
 
+	private Transform[,] board;
+
 	void Update()
 	{
-		if (HP<=0)
+		board = GameObject.Find ("Level").GetComponent<TerrainManager> ().RawBoard;
+		if (HP <= 0)
 			Destroy(gameObject);
 
 		if (ShotCooldown > 0)
@@ -72,9 +75,13 @@ public class UnitProperties : MonoBehaviour
 					if( hit.transform.position == transform.position )
 					{
 						float dist = Vector3.Distance( pos, enemyPos );
-						float yDiff = Mathf.Abs( pos.y - enemyPos.y ); // can't shoot at enemies above
 
-						if( dist < closestDist && ( yDiff > 1f || pos.y > enemyPos.y ) )
+						Vector3 boardPos = board[(int)CurrentlyOnTile.x, (int)CurrentlyOnTile.y].position;
+						Vector2 ebpos = hit.transform.GetComponent<UnitProperties>().CurrentlyOnTile;
+						Vector3 enemyBoardPos = board[(int)ebpos.x, (int)ebpos.y].position;
+						float yDiff = Mathf.Abs( boardPos.y - enemyBoardPos.y ); // can't shoot at enemies above
+
+						if( dist < closestDist && ( yDiff > 1f || pos.y >= enemyPos.y ) )
 						{
 							closestDist = dist;
 							closestUnit = enemies[i];
@@ -83,7 +90,6 @@ public class UnitProperties : MonoBehaviour
 				}
 			}
 		}
-
 		return closestUnit;
 	}
 
