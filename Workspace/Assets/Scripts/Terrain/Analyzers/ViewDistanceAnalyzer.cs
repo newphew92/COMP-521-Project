@@ -6,12 +6,13 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 {
 	public int UnitViewRadius;
 	private int[,] ViewDistances; // num tiles seen from each given point
-	private Transform testUnit; // used for testing raycasts
+	private GameObject testUnit; // used for testing raycasts
 
 	public override void AnalyzeTerrain()
 	{
-		Transform prefab = Resources.Load ("TerrainGen/Floor") as Transform;
-		testUnit = Instantiate (prefab, Vector3.zero, Quaternion.identity) as Transform;
+		GameObject prefab = Resources.Load ("TerrainGen/Floor") as GameObject;
+		testUnit = Instantiate (prefab, Vector3.zero, Quaternion.identity) as GameObject;
+		testUnit.name = "testUnit";
 
 		int length = level.GetLength (0);
 		int width = level.GetLength (1);
@@ -20,7 +21,7 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 		FillInViewDistances ();
 		FillInHeat ();
 
-		Destroy (testUnit.gameObject);
+		Destroy (testUnit);
 	}
 
 	void FillInViewDistances ()
@@ -30,6 +31,7 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 		{
 			for( int j = 0; j < level.GetLength(1); j++)
 			{
+				testUnit.transform.position = level[i,j].transform.position + Vector3.up * 10;
 				ViewDistances[i,j] = NumberOfTileInVision(i,j);
 			}
 		}
@@ -39,8 +41,6 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 	{
 		Transform tile = level [i, j].transform;
 		int canSee = 1; // because the tile itself can be seen
-
-		testUnit.transform.position = tile.position + Vector3.up;
 
 		for( int x = 0; i < level.GetLength(0); i++)
 		{
@@ -54,11 +54,12 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 				if(currentlyObserving.position.y - tile.position.y < 1)
 				{
 					RaycastHit hit;
-					Vector3 origin = currentlyObserving.position + Vector3.up * 0.5f;
+					Vector3 origin = currentlyObserving.position + Vector3.up;
 					Vector3 direction = tile.position - origin;
 					if( Physics.Raycast( origin, direction, out hit, UnitViewRadius))
 					{
-						if(hit.transform.name == "Floor");
+						Debug.Log(origin + "\n" + direction + "\n" + hit.transform.parent.name +" " + hit.transform.name);
+						if(hit.transform.name == testUnit.name)
 							canSee++;
 					}
 				}
