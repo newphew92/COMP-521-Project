@@ -21,8 +21,7 @@ public class TerrainManager : MonoBehaviour
 	private HSBColor P2Color = HSBColor.FromColor(Color.blue);
 
 	public Transform[,] RawBoard;
-	public TileProperties[,] AnalyzedBoard;
-	public PlayerInfluenceMap PlayerInfluence; // no board influence, just the players
+	public PlayerInfluenceMap PlayerInfluence; // the full, complete representation, players and all
 
 	// the bonuses must be >= 1
 	private float HighGroundInfluenceBonus = 2f;
@@ -70,6 +69,55 @@ public class TerrainManager : MonoBehaviour
 		analyzer.maxTerrainHeat = maxTerrainHeat; // must be > 0
 		analyzer.AnalyzeTerrain ();
 		RawBoard = analyzer.level;
+
+		DetermineEdges ();
+	}
+
+	private void DetermineEdges()
+	{
+		for(int i = 0; i < RawBoard.GetLength(0); i++)
+		{
+			for(int j = 0; j < RawBoard.GetLength(1); j++)
+			{
+				TileProperties[] neighbours = GetBoardNeighbours(i,j);
+
+				float height = RawBoard[i,j].position.y;
+
+				bool isRamp = RawBoard[i,j].GetComponent<TileProperties>().Ramp;
+				if(isRamp) continue;
+
+				for(int x = 0; x < neighbours.Length; x++)
+				{
+					if(neighbours[x] == null) continue;
+
+					Vector2 p = neighbours[x].Position;
+					if(!neighbours[x].Ramp && RawBoard[(int) p.x, (int) p.y].position.y < height)
+					{
+						RawBoard[i,j].GetComponent<TileProperties>().Edge = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	private TileProperties[] GetBoardNeighbours(int i, int j)
+	{
+		TileProperties[] ret = new TileProperties[8];
+		int indexCounter = 0;
+		for(int x = i-1; x <= i+1; x++)
+		{
+			for(int y = j-1; y <= j+1; y++)
+			{
+				if(x==i && y==j) continue;
+
+				if(x >= 0 && x < RawBoard.GetLength(0))
+					if(y >= 0 && y < RawBoard.GetLength(1))
+						ret[indexCounter] = RawBoard[x,y].GetComponent<TileProperties>();
+				indexCounter++;
+			}
+		}
+		return ret;
 	}
 
 	private void UpdateRawBoardValues()

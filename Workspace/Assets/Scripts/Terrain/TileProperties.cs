@@ -8,6 +8,8 @@ public class TileProperties : MonoBehaviour
 	public Vector2 Position;
 
 	public bool Ramp = false;
+	public bool Edge = false;
+
 	public RampCardinal RampBottom = RampCardinal.NONE;
 	public RampCardinal RampTop = RampCardinal.NONE;
 }
