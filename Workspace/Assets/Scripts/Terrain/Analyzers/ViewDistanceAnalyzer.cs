@@ -1,49 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// TODO
+// analyzes based on view distance, not shooting distance
 public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer 
 {
 	public int UnitViewRadius;
-	private float[,] ViewDistances;
-	private float[,] SmallestViewDistance; // used tofr choke points
+	private int[,] ViewDistances; // num tiles seen from each given point
 
-	// TODO: look at lower ground
 	public override void AnalyzeTerrain()
 	{
 		int length = level.GetLength (0);
 		int width = level.GetLength (1);
-		ViewDistances = new float[length, width];
-		SmallestViewDistance = new float[length, width];
+		ViewDistances = new int[length, width];
 
 		FillInViewDistances ();
+		// TODO: fill in heat
 	}
 
-	// TODO
-	private void FillInViewDistances ()
+	void FillInViewDistances ()
 	{
-		// Algorithm:
-			// Raycast in all directions
-				// if terrain is hit, track which block it is ( bool[,] )
-			// Do the same for looking at lower ground
-			// compute heat value based on this
-
 		// for each tile
 		for( int i = 0; i < level.GetLength(0); i++)
 		{
 			for( int j = 0; j < level.GetLength(1); j++)
 			{
-				// 360 degrees of raycast
-				for( int x = 0; x < 360; x++)
+				ViewDistances[i,j] = NumberOfTileInVision(i,j);
+			}
+		}
+	}
+
+	int NumberOfTileInVision(int i, int j)
+	{
+		Transform tile = level [i, j].transform;
+		int canSee = 1; // because the tile itself can be seen
+
+		for( int x = 0; i < level.GetLength(0); i++)
+		{
+			for( int y = 0; j < level.GetLength(1); j++)
+			{
+				if(x == i && y == j)
+					continue;
+
+				Transform currentlyObserving = level[x,y].transform;
+
+				if(currentlyObserving.position.y - tile.position.y < 1)
 				{
-					// figure out distance of nearest walls
-
-
-					// now figure out if there's a vantage point
-						// perhaps look at surrounding tiles that weren't raycast hit and see if they're lower?
-							// then what about larger planes that are below?
+					// TODO raycast
 				}
 			}
 		}
+		return canSee;
 	}
 }
