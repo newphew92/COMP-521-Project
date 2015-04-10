@@ -11,14 +11,15 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 	public override void AnalyzeTerrain()
 	{
 		Transform prefab = Resources.Load ("TerrainGen/Floor") as Transform;
-		testUnit = Instantiate (testUnit, Vector3.zero, Quaternion.identity) as Transform;
+		testUnit = Instantiate (prefab, Vector3.zero, Quaternion.identity) as Transform;
 
 		int length = level.GetLength (0);
 		int width = level.GetLength (1);
 		ViewDistances = new int[length, width];
 
 		FillInViewDistances ();
-		// TODO: fill in heat
+		FillInHeat ();
+
 		Destroy (testUnit.gameObject);
 	}
 
@@ -64,5 +65,42 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 			}
 		}
 		return canSee;
+	}
+
+	// fills in the heat based on view distances
+	void FillInHeat()
+	{
+		// find the extremes
+		int minVision = 1;
+		int maxVision = 1;
+
+		for( int i = 0; i < ViewDistances.GetLength(0); i++)
+		{
+			for( int j = 0; j < ViewDistances.GetLength(1); j++)
+			{
+				int currentValue = ViewDistances[i,j];
+
+				if(currentValue > maxVision)
+					maxVision = currentValue;
+				if(currentValue < minVision)
+					minVision = currentValue;
+			}
+		}
+
+		// TODO: test and fix this heat calculation. I have a suspicion it's no good
+		// now assign the heat values proportionately
+		float heatDiff = maxVision - minVision;
+		float heatIncrease = 0;
+		if( heatDiff > 0 )
+			heatIncrease = maxTerrainHeat / heatDiff;
+
+		for( int i = 0; i < ViewDistances.GetLength(0); i++)
+		{
+			for( int j = 0; j < ViewDistances.GetLength(1); j++)
+			{
+				Transform tile = level[i,j];
+				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * (ViewDistances[i, j]/heatDiff);
+			}
+		}
 	}
 }
