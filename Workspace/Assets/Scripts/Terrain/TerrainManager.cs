@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TerrainManager : MonoBehaviour 
 {
-	public enum AnalysisType{ HardCodedValues, Height, ViewDistance };
+	public enum AnalysisType{ HardCodedValues, Height, ViewDistance, ShootingDistance };
 
 	public AnalysisType TypeOfAnalysisToUse = AnalysisType.Height;
 
@@ -57,11 +57,15 @@ public class TerrainManager : MonoBehaviour
 	{
 		if (TypeOfAnalysisToUse == AnalysisType.Height)
 			analyzer = gameObject.AddComponent<HeightAnalyzer>();
-		else if (TypeOfAnalysisToUse == AnalysisType.ViewDistance )
+		else if (TypeOfAnalysisToUse == AnalysisType.ViewDistance || TypeOfAnalysisToUse == AnalysisType.ShootingDistance)
 		{
 			analyzer = gameObject.AddComponent<ViewDistanceAnalyzer>();
-			GetComponent<ViewDistanceAnalyzer>().UnitViewRadius = PlayerInfluenceRadius;
+			if(TypeOfAnalysisToUse == AnalysisType.ViewDistance)
+				GetComponent<ViewDistanceAnalyzer>().UnitViewRadius = 99999;
+			else // shooting distance
+				GetComponent<ViewDistanceAnalyzer>().UnitViewRadius = PlayerInfluenceRadius;
 		}
+
 		analyzer.level = RawBoard;
 		analyzer.maxTerrainHeat = maxTerrainHeat; // must be > 0
 		analyzer.AnalyzeTerrain ();

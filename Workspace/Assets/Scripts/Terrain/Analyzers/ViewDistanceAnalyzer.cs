@@ -1,48 +1,105 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// TODO
+// analyzes based on view distance, not shooting distance
 public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer 
 {
 	public int UnitViewRadius;
-	private float[,] ViewDistances;
-	private float[,] SmallestViewDistance; // used tofr choke points
+	private int[,] ViewDistances; // num tiles seen from each given point
+	private Transform testUnit; // used for testing raycasts
 
-	// TODO: look at lower ground
 	public override void AnalyzeTerrain()
 	{
+		Transform prefab = Resources.Load ("TerrainGen/Floor") as Transform;
+		testUnit = Instantiate (prefab, Vector3.zero, Quaternion.identity) as Transform;
+
 		int length = level.GetLength (0);
 		int width = level.GetLength (1);
-		ViewDistances = new float[length, width];
-		SmallestViewDistance = new float[length, width];
+		ViewDistances = new int[length, width];
 
 		FillInViewDistances ();
+		FillInHeat ();
+
+		Destroy (testUnit.gameObject);
 	}
 
-	// TODO
-	private void FillInViewDistances ()
+	void FillInViewDistances ()
 	{
-		// Algorithm:
-			// Raycast in all directions
-				// if terrain is hit, track which block it is ( bool[,] )
-			// Do the same for looking at lower ground
-			// compute heat value based on this
-
 		// for each tile
 		for( int i = 0; i < level.GetLength(0); i++)
 		{
 			for( int j = 0; j < level.GetLength(1); j++)
 			{
-				// 360 degrees of raycast
-				for( int x = 0; x < 360; x++)
+				ViewDistances[i,j] = NumberOfTileInVision(i,j);
+			}
+		}
+	}
+
+	int NumberOfTileInVision(int i, int j)
+	{
+		Transform tile = level [i, j].transform;
+		int canSee = 1; // because the tile itself can be seen
+
+		testUnit.transform.position = tile.position + Vector3.up;
+
+		for( int x = 0; i < level.GetLength(0); i++)
+		{
+			for( int y = 0; j < level.GetLength(1); j++)
+			{
+				if(x == i && y == j)
+					continue;
+
+				Transform currentlyObserving = level[x,y].transform;
+
+				if(currentlyObserving.position.y - tile.position.y < 1)
 				{
-					// figure out distance of nearest walls
-
-
-					// now figure out if there's a vantage point
-						// perhaps look at surrounding tiles that weren't raycast hit and see if they're lower?
-							// then what about larger planes that are below?
+					RaycastHit hit;
+					Vector3 origin = currentlyObserving.position + Vector3.up * 0.5f;
+					Vector3 direction = tile.position - origin;
+					if( Physics.Raycast( origin, direction, out hit, UnitViewRadius))
+					{
+						if(hit.transform.name == "Floor");
+							canSee++;
+					}
 				}
+			}
+		}
+		return canSee;
+	}
+
+	// fills in the heat based on view distances
+	void FillInHeat()
+	{
+		// find the extremes
+		int minVision = 1;
+		int maxVision = 1;
+
+		for( int i = 0; i < ViewDistances.GetLength(0); i++)
+		{
+			for( int j = 0; j < ViewDistances.GetLength(1); j++)
+			{
+				int currentValue = ViewDistances[i,j];
+
+				if(currentValue > maxVision)
+					maxVision = currentValue;
+				if(currentValue < minVision)
+					minVision = currentValue;
+			}
+		}
+
+		// TODO: test and fix this heat calculation. I have a suspicion it's no good
+		// now assign the heat values proportionately
+		float heatDiff = maxVision - minVision;
+		float heatIncrease = 0;
+		if( heatDiff > 0 )
+			heatIncrease = maxTerrainHeat / heatDiff;
+
+		for( int i = 0; i < ViewDistances.GetLength(0); i++)
+		{
+			for( int j = 0; j < ViewDistances.GetLength(1); j++)
+			{
+				Transform tile = level[i,j];
+				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * (ViewDistances[i, j]/heatDiff);
 			}
 		}
 	}
