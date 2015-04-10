@@ -57,16 +57,15 @@ public class TerrainManager : MonoBehaviour
 	{
 		if (TypeOfAnalysisToUse == AnalysisType.Height)
 			analyzer = gameObject.AddComponent<HeightAnalyzer>();
-		else if (TypeOfAnalysisToUse == AnalysisType.ViewDistance )
+		else if (TypeOfAnalysisToUse == AnalysisType.ViewDistance || TypeOfAnalysisToUse == AnalysisType.ShootingDistance)
 		{
 			analyzer = gameObject.AddComponent<ViewDistanceAnalyzer>();
-			GetComponent<ViewDistanceAnalyzer>().UnitViewRadius = 99999;
+			if(TypeOfAnalysisToUse == AnalysisType.ViewDistance)
+				GetComponent<ViewDistanceAnalyzer>().UnitViewRadius = 99999;
+			else // shooting distance
+				GetComponent<ViewDistanceAnalyzer>().UnitViewRadius = PlayerInfluenceRadius;
 		}
-		else if (TypeOfAnalysisToUse == AnalysisType.ShootingDistance )
-		{
-			analyzer = gameObject.AddComponent<ShootingDistanceAnalyzer>();
-			GetComponent<ShootingDistanceAnalyzer>().UnitViewRadius = PlayerInfluenceRadius;
-		}
+
 		analyzer.level = RawBoard;
 		analyzer.maxTerrainHeat = maxTerrainHeat; // must be > 0
 		analyzer.AnalyzeTerrain ();
