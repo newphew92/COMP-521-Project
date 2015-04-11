@@ -75,7 +75,7 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 	{
 		// find the extremes
 		int minVision = 1;
-		int maxVision = 1;
+		int maxVision = 0;
 
 		for( int i = 0; i < ViewDistances.GetLength(0); i++)
 		{
@@ -93,16 +93,18 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 		// TODO: test and fix this heat calculation. I have a suspicion it's no good
 		// now assign the heat values proportionately
 		float heatDiff = maxVision - minVision;
+		Debug.Log (maxVision);
+		Debug.Log (minVision);
 		float heatIncrease = 0;
 		if( heatDiff > 0 )
-			heatIncrease = maxTerrainHeat / heatDiff;
+			heatIncrease = 2*maxTerrainHeat / heatDiff;
 
 		for( int i = 0; i < ViewDistances.GetLength(0); i++)
 		{
 			for( int j = 0; j < ViewDistances.GetLength(1); j++)
 			{
 				Transform tile = level[i,j];
-				tile.GetComponent<TileProperties>().BaseHeat = maxTerrainHeat * -1 + heatIncrease * (ViewDistances[i,j] - minVision);
+				tile.GetComponent<TileProperties>().BaseHeat = maxTerrainHeat - heatIncrease * (ViewDistances[i,j] - minVision);
 			}
 		}
 	}
