@@ -76,9 +76,9 @@ public class UnitProperties : MonoBehaviour
 					{
 						float dist = Vector3.Distance( pos, enemyPos );
 
-						Vector3 boardPos = board[(int)CurrentlyOnTile.x, (int)CurrentlyOnTile.y].position;
+						Vector3 boardPos = board[(int)CurrentlyOnTile.x, (int)CurrentlyOnTile.y].localPosition;
 						Vector2 ebpos = hit.transform.GetComponent<UnitProperties>().CurrentlyOnTile;
-						Vector3 enemyBoardPos = board[(int)ebpos.x, (int)ebpos.y].position;
+						Vector3 enemyBoardPos = board[(int)ebpos.x, (int)ebpos.y].localPosition;
 						float yDiff = Mathf.Abs( boardPos.y - enemyBoardPos.y ); // can't shoot at enemies above
 
 						if( dist < closestDist && ( yDiff > 1f || pos.y >= enemyPos.y ) )
