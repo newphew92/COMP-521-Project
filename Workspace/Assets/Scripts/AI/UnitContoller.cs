@@ -57,6 +57,7 @@ public class UnitContoller : MonoBehaviour {
 
 	void Move(){
 		if (Enemies < Allies) {
+			Nav.SetDestination(ClosestEnemy.position);
 		}
 		if (tileCheck.potentialTile != null && tileCheck.floorHeat <= curHeat) {
 //			Scanning=false;
