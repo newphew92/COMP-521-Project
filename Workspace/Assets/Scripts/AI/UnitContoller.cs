@@ -20,6 +20,8 @@ public class UnitContoller : MonoBehaviour {
 
 	public int Enemies;
 	public int Allies;
+
+	public Transform ClosestEnemy;
 	// Use this for initialization
 	void Start () {
 		Manager = gameObject.GetComponentInParent<SquadManager> ();
@@ -54,6 +56,8 @@ public class UnitContoller : MonoBehaviour {
 	}
 
 	void Move(){
+		if (Enemies < Allies) {
+		}
 		if (tileCheck.potentialTile != null && tileCheck.floorHeat <= curHeat) {
 //			Scanning=false;
 			Nav.SetDestination (tileCheck.potentialTile.position);
@@ -77,13 +81,30 @@ public class UnitContoller : MonoBehaviour {
 		float gradient= Sign*Time.deltaTime;
 		transform.Rotate (Vector3.up * gradient*28);
 	}
+	void getClosestEnemy(Transform[] list){
+		float min = 1000;
+		for (int i=0; i<list.Length; i++) {
+			if (list[i]!=null){
+			float dist=Vector3.Distance(transform.position,list[i].position);
+			if (dist<min){
+				min=dist;
+				ClosestEnemy=list[i];
+				Debug.Log(list[i]);
+			}
+			}
+		}
+
+	}
+
 	void threatAssess(){
 		if (transform.tag == "Red") {
 			Enemies = Manager.BlueCount;
 			Allies=Manager.RedCount-1;
+			getClosestEnemy(Manager.Blues);
 		} else {
 			Enemies = Manager.RedCount;
 			Allies=Manager.BlueCount-1;
+			getClosestEnemy(Manager.Reds);
 		}
 	}
 	void See(){
@@ -92,9 +113,9 @@ public class UnitContoller : MonoBehaviour {
 		Ray ray = new Ray (transform.position+0.5f*Vector3.forward, Vector3.forward);
 		if (Physics.Raycast (ray, out hit, 1)) {
 			if (hit.transform.tag=="Wall"){
-				Debug.Log("walling"+transform.eulerAngles+" "+gameObject.name);
+//				Debug.Log("walling"+transform.eulerAngles+" "+gameObject.name);
 				transform.Rotate (180*Vector3.up-transform.eulerAngles);
-				Debug.Log(transform.eulerAngles);
+//				Debug.Log(transform.eulerAngles);
 			}
 		}
 		if (Physics.Raycast (ray, out hit, 5)) {
