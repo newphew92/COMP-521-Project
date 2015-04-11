@@ -13,6 +13,7 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 		GameObject prefab = Resources.Load ("TerrainGen/Floor") as GameObject;
 		testUnit = Instantiate (prefab, Vector3.zero, Quaternion.identity) as GameObject;
 		testUnit.name = "testUnit";
+		transform.parent = GameObject.Find ("Level").transform;
 
 		int length = level.GetLength (0);
 		int width = level.GetLength (1);
@@ -40,15 +41,12 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 	int NumberOfTileInVision(int i, int j)
 	{
 		Transform tile = level [i, j].transform;
-		int canSee = 1; // because the tile itself can be seen
+		int canSee = 0;
 
-		for( int x = 0; i < level.GetLength(0); i++)
+		for( int x = 0; x < level.GetLength(0); x++)
 		{
-			for( int y = 0; j < level.GetLength(1); j++)
+			for( int y = 0; y < level.GetLength(1); y++)
 			{
-				if(x == i && y == j)
-					continue;
-
 				Transform currentlyObserving = level[x,y].transform;
 
 				if(currentlyObserving.position.y - tile.position.y < 1)
@@ -57,11 +55,14 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 					Vector3 origin = currentlyObserving.position + Vector3.up;
 					Vector3 direction = testUnit.transform.position - origin;
 
-//					LayerMask mask = ~(1 << LayerMask.NameToLayer ("Terrain"));
-					if(Physics.Raycast(origin, direction, out hit, UnitViewRadius))
+					LayerMask mask = (1 << LayerMask.NameToLayer ("Terrain"));
+					if(Physics.Raycast(origin, direction, out hit, UnitViewRadius, mask))
 					{
+
 						if(hit.transform.name == testUnit.name)
+						{
 							canSee++;
+						}
 					}
 				}
 			}
@@ -92,7 +93,6 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 		// TODO: test and fix this heat calculation. I have a suspicion it's no good
 		// now assign the heat values proportionately
 		float heatDiff = maxVision - minVision;
-		Debug.Log (minVision);
 		float heatIncrease = 0;
 		if( heatDiff > 0 )
 			heatIncrease = maxTerrainHeat / heatDiff;
@@ -102,7 +102,7 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 			for( int j = 0; j < ViewDistances.GetLength(1); j++)
 			{
 				Transform tile = level[i,j];
-				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * (ViewDistances[i, j]/heatDiff)+1;
+				tile.GetComponent<TileProperties>().BaseHeat = maxTerrainHeat * -1 + heatIncrease * (ViewDistances[i,j] - minVision);
 			}
 		}
 	}
