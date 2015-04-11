@@ -90,7 +90,6 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 			}
 		}
 
-		// TODO: test and fix this heat calculation. I have a suspicion it's no good
 		// now assign the heat values proportionately
 		float heatDiff = maxVision - minVision;
 		Debug.Log (maxVision);
