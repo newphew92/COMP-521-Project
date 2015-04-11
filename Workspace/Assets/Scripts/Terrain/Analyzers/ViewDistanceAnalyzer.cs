@@ -31,7 +31,7 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 		{
 			for( int j = 0; j < level.GetLength(1); j++)
 			{
-				testUnit.transform.position = level[i,j].transform.position + Vector3.up * 10;
+				testUnit.transform.position = level[i,j].transform.position + Vector3.up;
 				ViewDistances[i,j] = NumberOfTileInVision(i,j);
 			}
 		}
@@ -55,10 +55,11 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 				{
 					RaycastHit hit;
 					Vector3 origin = currentlyObserving.position + Vector3.up;
-					Vector3 direction = tile.position - origin;
-					if( Physics.Raycast( origin, direction, out hit, UnitViewRadius))
+					Vector3 direction = testUnit.transform.position - origin;
+
+//					LayerMask mask = ~(1 << LayerMask.NameToLayer ("Terrain"));
+					if(Physics.Raycast(origin, direction, out hit, UnitViewRadius))
 					{
-						Debug.Log(origin + "\n" + direction + "\n" + hit.transform.parent.name +" " + hit.transform.name);
 						if(hit.transform.name == testUnit.name)
 							canSee++;
 					}
@@ -91,6 +92,7 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 		// TODO: test and fix this heat calculation. I have a suspicion it's no good
 		// now assign the heat values proportionately
 		float heatDiff = maxVision - minVision;
+		Debug.Log (minVision);
 		float heatIncrease = 0;
 		if( heatDiff > 0 )
 			heatIncrease = maxTerrainHeat / heatDiff;
@@ -100,7 +102,7 @@ public class ViewDistanceAnalyzer : AbstractTerrainAnalyzer
 			for( int j = 0; j < ViewDistances.GetLength(1); j++)
 			{
 				Transform tile = level[i,j];
-				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * (ViewDistances[i, j]/heatDiff);
+				tile.GetComponent<TileProperties>().BaseHeat = heatIncrease * (ViewDistances[i, j]/heatDiff)+1;
 			}
 		}
 	}
