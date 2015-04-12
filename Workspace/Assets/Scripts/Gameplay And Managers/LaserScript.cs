@@ -7,6 +7,7 @@ public class LaserScript : MonoBehaviour
 	public Transform Destination;
 	public float damage = 20f;
 	private float timeout = 5f;
+	private bool hit = false;
 
 	void Start()
 	{
@@ -24,9 +25,18 @@ public class LaserScript : MonoBehaviour
 	{
 		UnitProperties p = Destination.GetComponent<UnitProperties> ();
 		if (p != null)
+		{
 			p.HP -= damage;
+			hit = true;
+		}
 
 		GetComponent<CapsuleCollider> ().enabled = false;
 		GetComponent<MeshRenderer> ().enabled = false;
+	}
+
+	void OnDestroy()
+	{
+		if (Destination != null)
+			Destination.GetComponent<UnitProperties> ().HP -= damage;
 	}
 }
