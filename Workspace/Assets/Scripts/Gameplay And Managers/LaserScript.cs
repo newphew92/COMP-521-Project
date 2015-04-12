@@ -36,7 +36,7 @@ public class LaserScript : MonoBehaviour
 
 	void OnDestroy()
 	{
-		if (Destination != null)
+		if (Destination != null && !hit)
 			Destination.GetComponent<UnitProperties> ().HP -= damage;
 	}
 }

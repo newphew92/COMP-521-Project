@@ -21,14 +21,11 @@ public class UnitProperties : MonoBehaviour
 	private Transform[,] board;
 	private Transform players;
 
-	void Start()
+	void Update()
 	{
 		board = GameObject.Find ("Level").GetComponent<TerrainManager> ().RawBoard;
 		players = GameObject.Find ("Players").transform;
-	}
 
-	void Update()
-	{
 		if (HP <= 0)
 			Destroy(gameObject);
 
@@ -64,10 +61,8 @@ public class UnitProperties : MonoBehaviour
 					Vector3 flattenedpos = new Vector3(transform.position.x, 0, transform.position.z);
 					Vector3 flattenedunit = new Vector3(unit.position.x, 0, unit.position.z);
 					float dist = Vector3.Distance(flattenedpos, flattenedunit);
-
 					float height = board[(int)CurrentlyOnTile.x, (int)CurrentlyOnTile.y].localPosition.y;
 					float enemyheight = board[(int)enemyProp.CurrentlyOnTile.x, (int) enemyProp.CurrentlyOnTile.y].localPosition.y;
-					float heightDiff = Mathf.Abs(height - enemyheight);
 
 					if( height + 0.5f >= enemyheight)
 					{
