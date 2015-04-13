@@ -19,72 +19,57 @@ public class UnitProperties : MonoBehaviour
 	private float ShotCooldown = 0f;
 
 	private Transform[,] board;
+	private Transform players;
 
 	void Update()
 	{
 		board = GameObject.Find ("Level").GetComponent<TerrainManager> ().RawBoard;
+		players = GameObject.Find ("Players").transform;
+
 		if (HP <= 0)
 			Destroy(gameObject);
 
 		if (ShotCooldown > 0)
 			ShotCooldown -=Time.deltaTime;
 
-		if(ShotCooldown <= 0)
-			Fire ();
+		Fire ();
 
 		UpdatePosition ();
 	}
 
 	private void Fire()
 	{
-		Transform[] enemies = GetEnemies();
-		Transform closestEnemy = GetClosestUnit (enemies);
-
-		if (closestEnemy != null)
+		Transform closestEnemy = GetClosestUnit ();
+		if(closestEnemy != null)
 			ShootAt (closestEnemy);
 	}
 
-	private Transform[] GetEnemies()
-	{
-		PlayerManager pm = GameObject.Find ("Level").GetComponent<PlayerManager> ();
-
-		if (PlayerSide == Team.Blue)
-			return pm.RedPlayer;
-
-		return pm.BluePlayer;
-	}
-
-	private Transform GetClosestUnit(Transform[] enemies)
+	private Transform GetClosestUnit()
 	{
 		float closestDist = 99999f;
 		Transform closestUnit = null;
 
 		Vector3 pos = transform.position;
-		for( int i = 0; i < enemies.Length; i++)
+		for( int i = 0; i < players.childCount; i++)
 		{
-			if( enemies[i] != null )
+			Transform unit = players.GetChild(i);
+			if( unit != null )
 			{
-				Team enemyTeam = enemies [i].GetComponent<UnitProperties> ().PlayerSide;
-				Vector3 enemyPos = enemies[i].position;
-
-				RaycastHit hit;
-				LayerMask mask = ~(1 << LayerMask.NameToLayer (enemyTeam.ToString()));
-				if(Physics.Raycast(enemyPos + Vector3.up, pos - enemyPos, out hit, FiringRadius, mask))
+				UnitProperties enemyProp = unit.GetComponent<UnitProperties>();
+				if(enemyProp.PlayerSide != PlayerSide)
 				{
-					// raycast from enemy to unit successfull --> in firing range
-					if( hit.transform.position == transform.position )
+					Vector3 flattenedpos = new Vector3(transform.position.x, 0, transform.position.z);
+					Vector3 flattenedunit = new Vector3(unit.position.x, 0, unit.position.z);
+					float dist = Vector3.Distance(flattenedpos, flattenedunit);
+					float height = board[(int)CurrentlyOnTile.x, (int)CurrentlyOnTile.y].localPosition.y;
+					float enemyheight = board[(int)enemyProp.CurrentlyOnTile.x, (int) enemyProp.CurrentlyOnTile.y].localPosition.y;
+
+					if( height + 0.5f >= enemyheight)
 					{
-						float dist = Vector3.Distance( pos, enemyPos );
-
-						Vector3 boardPos = board[(int)CurrentlyOnTile.x, (int)CurrentlyOnTile.y].localPosition;
-						Vector2 ebpos = hit.transform.GetComponent<UnitProperties>().CurrentlyOnTile;
-						Vector3 enemyBoardPos = board[(int)ebpos.x, (int)ebpos.y].localPosition;
-						float yDiff = Mathf.Abs( boardPos.y - enemyBoardPos.y ); // can't shoot at enemies above
-
-						if( dist < closestDist && ( yDiff > 1f || pos.y >= enemyPos.y ) )
+						if(dist < closestDist && dist < FiringRadius)
 						{
 							closestDist = dist;
-							closestUnit = enemies[i];
+							closestUnit = unit;
 						}
 					}
 				}
