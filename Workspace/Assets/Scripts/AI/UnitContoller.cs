@@ -42,14 +42,11 @@ public class UnitContoller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
-		if (Scanning) {
-			Scan ();
-		}
+		Scan ();
 		checkSelfHeat ();
-		Move ();
 		See ();
 		threatAssess ();
+		Move ();	
 	}
 	void changeSign(){
 		Sign *= -1;
@@ -58,13 +55,16 @@ public class UnitContoller : MonoBehaviour {
 	void Move(){
 		if (Enemies < Allies) {
 			Nav.SetDestination(ClosestEnemy.position);
+//			Scanning=false;
+			Debug.Log("going");
 		}
-		if (tileCheck.potentialTile != null && tileCheck.floorHeat <= curHeat) {
+		else if (tileCheck.potentialTile != null && tileCheck.floorHeat <= curHeat) {
 //			Scanning=false;
 			Nav.SetDestination (tileCheck.potentialTile.position);
 		} 
 		else{
 //			Debug.Log("resuming");
+//			Scanning=true;
 			Nav.SetDestination(transform.position+Vector3.forward);}
 	}
 
@@ -74,7 +74,8 @@ public class UnitContoller : MonoBehaviour {
 		if (Physics.Raycast (ray, out hit, 3)) {
 //					Debug.Log(hit.collider.gameObject.GetComponent<TileProperties>().BaseHeat+" "+hit.collider.name);
 //				hit.collider.gameObject.GetComponent<Renderer>().material.color=Color.black;
-				curHeat=hit.collider.gameObject.GetComponent<TileProperties>().BaseHeat;
+			if (hit.transform!=null&&(hit.transform.tag!="Red"||hit.transform.tag!="Blue")){	
+				curHeat=hit.collider.gameObject.GetComponent<TileProperties>().BaseHeat;}
 		} 
 	}
 
@@ -90,7 +91,7 @@ public class UnitContoller : MonoBehaviour {
 			if (dist<min){
 				min=dist;
 				ClosestEnemy=list[i];
-				Debug.Log(list[i]);
+//				Debug.Log(list[i]);
 			}
 			}
 		}
@@ -113,7 +114,7 @@ public class UnitContoller : MonoBehaviour {
 //		LayerMask mask = ~(1 << LayerMask.NameToLayer ());
 		Ray ray = new Ray (transform.position+0.5f*Vector3.forward, Vector3.forward);
 		if (Physics.Raycast (ray, out hit, 1)) {
-			if (hit.transform.tag=="Wall"){
+			if (hit.transform.tag=="Wall"||hit.transform.tag==transform.tag){
 //				Debug.Log("walling"+transform.eulerAngles+" "+gameObject.name);
 				transform.Rotate (180*Vector3.up-transform.eulerAngles);
 //				Debug.Log(transform.eulerAngles);
