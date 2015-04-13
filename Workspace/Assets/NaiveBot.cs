@@ -24,18 +24,35 @@ public class NaiveBot : MonoBehaviour {
 		if (Cheat) {
 			Nav.SetDestination (ClosestEnemy.position);
 		} else {
-			Nav.SetDestination (Vector3.forward);
+
+			Move ();
+//			Debug.Log("no cheat");
 		}
 
+	}
+	void Move(){
+		if (Enemies < Allies) {
+			Nav.SetDestination(ClosestEnemy.position);
+			//			Scanning=false;
+//			Debug.Log("going");
+		}
+
+		else{
+			//			Debug.Log("resuming");
+			//			Scanning=true;
+//			Debug.Log("onward");
+			Nav.SetDestination(transform.position + transform.forward);
+//			Nav.SetDestination(transform.position+3*Vector3.forward);
+		}
 	}
 	void threatAssess(){
 		if (transform.tag == "Red") {
 			Enemies = Manager.BlueCount;
-			Allies=Manager.RedCount-1;
+			Allies=Manager.RedCount;
 			getClosestEnemy(Manager.Blues);
 		} else {
 			Enemies = Manager.RedCount;
-			Allies=Manager.BlueCount-1;
+			Allies=Manager.BlueCount;
 			getClosestEnemy(Manager.Reds);
 		}
 	}
@@ -47,7 +64,7 @@ public class NaiveBot : MonoBehaviour {
 				if (dist<min){
 					min=dist;
 					ClosestEnemy=list[i];
-					Debug.Log(list[i]);
+//					Debug.Log(list[i]);
 				}
 			}
 		}

@@ -101,11 +101,11 @@ public class UnitContoller : MonoBehaviour {
 	void threatAssess(){
 		if (transform.tag == "Red") {
 			Enemies = Manager.BlueCount;
-			Allies=Manager.RedCount-1;
+			Allies=Manager.RedCount;
 			getClosestEnemy(Manager.Blues);
 		} else {
 			Enemies = Manager.RedCount;
-			Allies=Manager.BlueCount-1;
+			Allies=Manager.BlueCount;
 			getClosestEnemy(Manager.Reds);
 		}
 	}
