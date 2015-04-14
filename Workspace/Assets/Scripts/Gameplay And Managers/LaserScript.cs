@@ -13,14 +13,13 @@ public class LaserScript : MonoBehaviour
 	{
 		AudioSource source = GetComponent<AudioSource> ();
 		source.PlayOneShot (laserFire [Random.Range (0, laserFire.Length)]);
+		Destination.GetComponent<UnitProperties> ().HP -= damage;
 	}
 	
 	void Update()
 	{
 		if(timeout <= 0) Destroy (gameObject);
 		timeout -= Time.deltaTime;
-		if(Destination != null)
-			Destination.GetComponent<UnitProperties> ().HP -= damage;
 	}
 	
 	void OnCollisionEnter(Collision collision)	
