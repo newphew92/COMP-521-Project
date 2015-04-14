@@ -111,14 +111,15 @@ public class UnitContoller : MonoBehaviour {
 	}
 	void See(){
 		RaycastHit hit;
-//		LayerMask mask = ~(1 << LayerMask.NameToLayer ());
-		Ray ray = new Ray (transform.position+0.5f*Vector3.forward, Vector3.forward);
-		if (Physics.Raycast (ray, out hit, 1)) {
-			if (hit.transform.tag=="Wall"||hit.transform.tag==transform.tag){
+		LayerMask mask = ~(1 << LayerMask.NameToLayer ("Red")|1<< LayerMask.NameToLayer("Blue"));
+		Ray ray = new Ray (transform.position+0.1f*Vector3.forward, Vector3.forward);
+		if (Physics.Raycast (ray, out hit, 0.1f,mask)) {
+			if (hit.transform.tag=="Wall"||(hit.transform.tag=="Cliff" && transform.position.y<1)){
 //				Debug.Log("walling"+transform.eulerAngles+" "+gameObject.name);
 				transform.Rotate (180*Vector3.up-transform.eulerAngles);
 //				Debug.Log(transform.eulerAngles);
 			}
+
 		}
 		if (Physics.Raycast (ray, out hit, 5)) {
 			if (hit.transform.tag=="Red"||hit.transform.tag=="Blue"&&hit.transform.tag!=transform.tag){
