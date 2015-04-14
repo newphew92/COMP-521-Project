@@ -19,24 +19,14 @@ public class LaserScript : MonoBehaviour
 	{
 		if(timeout <= 0) Destroy (gameObject);
 		timeout -= Time.deltaTime;
+		if(Destination != null)
+			Destination.GetComponent<UnitProperties> ().HP -= damage;
 	}
 	
 	void OnCollisionEnter(Collision collision)	
 	{
 		UnitProperties p = Destination.GetComponent<UnitProperties> ();
-		if (p != null)
-		{
-			p.HP -= damage;
-			hit = true;
-		}
-
-		GetComponent<CapsuleCollider> ().enabled = false;
 		GetComponent<MeshRenderer> ().enabled = false;
-	}
-
-	void OnDestroy()
-	{
-		if (Destination != null && !hit)
-			Destination.GetComponent<UnitProperties> ().HP -= damage;
+		GetComponent<CapsuleCollider> ().enabled = false;
 	}
 }
