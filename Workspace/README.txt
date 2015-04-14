@@ -14,3 +14,7 @@ After choosing which script to play from, press "apply" in the top right button 
 In the inspector tab, there is a checkbox for "Cheating" at the "Naive" script component. 
 
 This checkbox can be used to toggle wether or not the Naive script is cheating or not.
+
+-----
+
+To adjust terrain analysis, click on the level game object and choose the type via the dropdown menu. You can also change the influence radius of each unit, how intense the influence is on the tile is standing on, the maximum displayed tile intensity, the maximum intensity that can be generated from terrain analysis and a number of other settings however we recommend leaving those alone as they are currently set to what we used to test with.
