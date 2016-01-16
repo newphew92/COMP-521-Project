@@ -7,3 +7,5 @@ The influence map visualized on top of the terrain (visualization can be disable
 A prototype of this game was created for McGill game jam and was subsequently scrapped and redesigned. You can find that prototype in the Game Jam branch.
 
 The heat map goes from dark blue (super safe/favourable) to white (neutral/no heat) to dark red (super dangerous).
+
+Team members: Nicholas and Terrence
